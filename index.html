@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -420,22 +421,47 @@
      ═══════════════════════════════════════ -->
 <script>
   // ┌─────────────────────────────────────────────────────────────┐
-  // │  STAP 1: Vervang dit door jouw Formspree endpoint           │
-  // │  Ga naar https://formspree.io → maak een form aan           │
-  // │  en plak de endpoint hier (bijv. https://formspree.io/f/xxx)│
+  // │  STAP 1: Supabase — jouw gratis database                    │
+  // │  1. Ga naar https://supabase.com en maak gratis account     │
+  // │  2. Maak een nieuw project aan                              │
+  // │  3. Ga naar Project Settings → API                          │
+  // │  4. Kopieer "Project URL" en "anon public key" hieronder    │
   // └─────────────────────────────────────────────────────────────┘
-  const FORMSPREE_URL = "https://formspree.io/f/mvzwqngz";
+  const SUPABASE_URL = "https://mkvpkcbtzxvgfwpcnanu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_Uf73kgjrGW3n63jgr7KZLQ_cy0-_u2I";
 
   // ┌─────────────────────────────────────────────────────────────┐
-  // │  STAP 2: Google Sheets als database                         │
-  // │  1. Maak een Google Sheet aan                               │
-  // │  2. Voeg kolommen toe: titel | auteur | richting | staat    │
-  // │     prijs | beschrijving | emoji | kleur                    │
-  // │  3. Publiceer het blad: Bestand → Delen → Publiceer         │
-  // │     als webpagina → CSV                                     │
-  // │  4. Vervang de URL hieronder                                │
+  // │  STAP 2: Maak de tabel aan in Supabase                      │
+  // │  Ga naar Table Editor → New Table → naam: "boeken"          │
+  // │  Kolommen worden automatisch aangemaakt via SQL hieronder   │
+  // │  Ga naar SQL Editor en plak dit:                            │
+  // │                                                             │
+  // │  create table boeken (                                      │
+  // │    id uuid default gen_random_uuid() primary key,           │
+  // │    created_at timestamptz default now(),                    │
+  // │    titel text not null,                                     │
+  // │    auteur text,                                             │
+  // │    richting text,                                           │
+  // │    jaar text,                                               │
+  // │    staat text,                                              │
+  // │    prijs numeric,                                           │
+  // │    beschrijving text,                                       │
+  // │    naam text,                                               │
+  // │    email text,                                              │
+  // │    telefoon text,                                           │
+  // │    zichtbaar boolean default true                           │
+  // │  );                                                         │
+  // │                                                             │
+  // │  alter table boeken enable row level security;              │
+  // │  create policy "Iedereen kan boeken lezen"                  │
+  // │    on boeken for select using (true);                       │
+  // │  create policy "Iedereen kan boeken toevoegen"              │
+  // │    on boeken for insert with check (true);                  │
+  // │  create policy "Iedereen kan boeken updaten"                │
+  // │    on boeken for update using (true);                       │
+  // │  create policy "Iedereen kan boeken verwijderen"            │
+  // │    on boeken for delete using (true);                       │
   // └─────────────────────────────────────────────────────────────┘
-  const SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNvKpsFm6H-doEqHJ2Od0I3J-aBLE02WDnvncKDxAHGe6llZtbmvKL1JpdFOAofJFsojwCWqBVP4U0/pub?gid=0&single=true&output=csv";
 
   // ┌─────────────────────────────────────────────────────────────┐
   // │  STAP 3: Jouw contactgegevens                               │
@@ -445,7 +471,7 @@
   const CONTACT_ADRES = "Parijsstraat 35 (0302), 3000 Leuven";
 
   // ┌─────────────────────────────────────────────────────────────┐
-  // │  STAP 4: Adminwachtwoord (verander dit!)                    │
+  // │  STAP 4: Adminwachtwoord                                    │
   // └─────────────────────────────────────────────────────────────┘
   const ADMIN_WACHTWOORD = "Jovaho.123";
 </script>
@@ -607,11 +633,9 @@
 <div class="page" id="page-verkoop">
   <div class="form-section" id="formContainer" style="max-width:680px;">
     <div class="form-title">Boeken aanbieden</div>
-    <div class="form-subtitle">Vul je gegevens één keer in en voeg al je boeken toe.</div>
+    <div class="form-subtitle">Jouw boek(en) verschijnen meteen op de site. Vul je gegevens één keer in.</div>
 
     <form id="verkoopForm" onsubmit="submitForm(event)">
-
-      <!-- CONTACTGEGEVENS — eenmalig -->
       <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:2rem;">
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:1rem;">Jouw gegevens</div>
         <div class="form-row">
@@ -630,7 +654,6 @@
         </div>
       </div>
 
-      <!-- BOEKEN -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">
           Boeken <span id="boekTeller" style="color:var(--text3);font-weight:400;font-size:13px;">(1)</span>
@@ -646,22 +669,21 @@
         + Nog een boek toevoegen
       </button>
 
-      <button type="submit" class="form-submit" id="submitBtn">Aanmelding versturen →</button>
-      <div class="form-note">Na het insturen nemen we contact met je op. Breng de boeken daarna langs op onze locatie in Leuven.</div>
-
+      <button type="submit" class="form-submit" id="submitBtn">Boek(en) plaatsen →</button>
+      <div class="form-note">Je boek(en) verschijnen meteen op de site. Breng ze daarna langs op onze locatie in Leuven.</div>
     </form>
   </div>
 
   <div class="success-screen" id="successScreen">
     <div class="success-icon">✓</div>
-    <div class="form-title" style="margin-bottom:0.5rem;">Aanmelding ontvangen!</div>
-    <p style="color:var(--text2);font-size:15px;max-width:420px;margin:0 auto 1rem;font-weight:300;">We nemen snel contact met je op via e-mail. Breng je boek(en) daarna langs op onze locatie.</p>
+    <div class="form-title" style="margin-bottom:0.5rem;">Je boek(en) staan online!</div>
+    <p style="color:var(--text2);font-size:15px;max-width:420px;margin:0 auto 1rem;font-weight:300;">Ze zijn meteen zichtbaar op de site. Breng ze langs op onze locatie en wij regelen de rest.</p>
     <div class="contact-card" style="max-width:320px;margin:0 auto 2rem;">
       <div class="label">Onze contactgegevens</div>
       <div class="line" id="succesEmail"></div>
       <div class="line" id="succesTel"></div>
     </div>
-    <button class="btn-primary" style="padding:0.75rem 1.75rem;" onclick="resetForm()">Nog boeken aanbieden</button>
+    <button class="btn-primary" style="padding:0.75rem 1.75rem;" onclick="resetForm()">Nog boeken plaatsen</button>
   </div>
 </div>
 
@@ -702,15 +724,15 @@
 
       <div class="admin-stats">
         <div class="admin-stat">
-          <div class="admin-stat-label">Beschikbaar</div>
+          <div class="admin-stat-label">Zichtbaar</div>
           <div class="admin-stat-num" style="color:var(--accent);" id="adminStatOnline">0</div>
         </div>
         <div class="admin-stat">
-          <div class="admin-stat-label">In afwachting</div>
+          <div class="admin-stat-label">Verborgen</div>
           <div class="admin-stat-num" style="color:#ef9f27;" id="adminStatWacht">0</div>
         </div>
         <div class="admin-stat">
-          <div class="admin-stat-label">Verkocht</div>
+          <div class="admin-stat-label">Totaal ingediend</div>
           <div class="admin-stat-num" id="adminStatVerkocht">0</div>
         </div>
         <div class="admin-stat">
@@ -721,9 +743,8 @@
 
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="adminTab(this,'alle')">Alle boeken</button>
-        <button class="admin-tab" onclick="adminTab(this,'wacht')">In afwachting</button>
-        <button class="admin-tab" onclick="adminTab(this,'online')">Online</button>
-        <button class="admin-tab" onclick="adminTab(this,'verkocht')">Verkocht</button>
+        <button class="admin-tab" onclick="adminTab(this,'zichtbaar')">Zichtbaar</button>
+        <button class="admin-tab" onclick="adminTab(this,'verborgen')">Verborgen</button>
       </div>
 
       <div style="margin-bottom:1.5rem;">
@@ -781,10 +802,12 @@
           <thead>
             <tr>
               <th>Boek</th>
-              <th>Richting</th>
+              <th>Richting / Jaar</th>
               <th>Prijs</th>
               <th>Staat</th>
+              <th>Verkoper</th>
               <th>Status</th>
+              <th>Acties</th>
             </tr>
           </thead>
           <tbody id="adminTableBody">
@@ -854,21 +877,56 @@
 </footer>
 
 <script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ─── SUPABASE CLIENT ───
+const isSupaConfigured = SUPABASE_URL !== 'JOUW_SUPABASE_URL';
+const supa = isSupaConfigured
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
+
 // ─── STATE ───
 let allBooks = [];
 let activeFilter = 'alle';
 let adminLoggedIn = false;
 let adminTabFilter = 'alle';
+let boekIndex = 0;
 
-// Standaard boeken als Google Sheets nog niet geconfigureerd is
+// Demo boeken als Supabase nog niet geconfigureerd is
 const demoBooks = [
-  { titel: "Beginselen van Belgisch privaatrecht", auteur: "Dirix & Sagaert", richting: "Rechten", staat: "Goed", prijs: 22, emoji: "⚖️", kleur: "#1a2a1a", status: "online" },
-  { titel: "Microeconomie", auteur: "Pindyck & Rubinfeld", richting: "Economie", staat: "Nieuw", prijs: 18, emoji: "📈", kleur: "#1a1a2a", status: "online" },
-  { titel: "Anatomie van de mens", auteur: "Gray's Anatomy NL", richting: "Geneeskunde", staat: "Goed", prijs: 35, emoji: "🫀", kleur: "#2a1a1a", status: "online" },
-  { titel: "Thermodynamica", auteur: "Çengel & Boles", richting: "Ingenieurswetenschappen", staat: "Matig", prijs: 28, emoji: "⚙️", kleur: "#1a2020", status: "online" },
-  { titel: "Ontwikkelingspsychologie", auteur: "Santrock", richting: "Psychologie", staat: "Goed", prijs: 16, emoji: "🧠", kleur: "#201a2a", status: "online" },
-  { titel: "Algoritmen en datastructuren", auteur: "Cormen et al.", richting: "Informatica", staat: "Nieuw", prijs: 20, emoji: "💻", kleur: "#1a1820", status: "online" },
+  { id: 1, titel: "Beginselen van Belgisch privaatrecht", auteur: "Dirix & Sagaert", richting: "Rechten", jaar: "Bachelor 2", staat: "Goed", prijs: 22, zichtbaar: true },
+  { id: 2, titel: "Microeconomie", auteur: "Pindyck & Rubinfeld", richting: "Economische wetenschappen", jaar: "Bachelor 1", staat: "Nieuw", prijs: 18, zichtbaar: true },
+  { id: 3, titel: "Anatomie van de mens", auteur: "Gray's Anatomy NL", richting: "Geneeskunde", jaar: "Bachelor 2", staat: "Goed", prijs: 35, zichtbaar: true },
+  { id: 4, titel: "Thermodynamica", auteur: "Çengel & Boles", richting: "Ingenieurswetenschappen", jaar: "Master 1", staat: "Matig", prijs: 28, zichtbaar: true },
+  { id: 5, titel: "Ontwikkelingspsychologie", auteur: "Santrock", richting: "Psychologie", jaar: "Bachelor 3", staat: "Goed", prijs: 16, zichtbaar: true },
+  { id: 6, titel: "Algoritmen en datastructuren", auteur: "Cormen et al.", richting: "Informatica", jaar: "Bachelor 2", staat: "Nieuw", prijs: 20, zichtbaar: true },
 ];
+
+const richtingKleuren = {
+  'Rechten': '#1a2a1a', 'Criminologische wetenschappen': '#1a2a1a', 'Notariaat': '#1a2a1a',
+  'Economische wetenschappen': '#1a1a2a', 'Handelswetenschappen': '#1a1a2a', 'Handelsingenieur': '#1a1a2a',
+  'Toegepaste economische wetenschappen': '#1a1a2a', 'Handelsingenieur in de beleidsinformatica': '#1a1a2a',
+  'Geneeskunde': '#2a1a1a', 'Tandheelkunde': '#2a1a1a', 'Farmaceutische wetenschappen': '#2a1a1a',
+  'Biomedische wetenschappen': '#2a1a1a', 'Verpleegkunde en vroedkunde': '#2a1a1a',
+  'Lichamelijke opvoeding en bewegingswetenschappen': '#2a1a1a', 'Revalidatiewetenschappen en kinesitherapie': '#2a1a1a',
+  'Ingenieurswetenschappen': '#1a2020', 'Bio-ingenieurswetenschappen': '#1a2020',
+  'Industriële wetenschappen': '#1a2020', 'Industriële ingenieurswetenschappen': '#1a2020',
+  'Informatica': '#1a1820', 'Wiskunde': '#1a1820', 'Fysica': '#1a1820', 'Chemie': '#1a1820',
+  'Biologie': '#1a2218', 'Biochemie en biotechnologie': '#1a2218',
+  'Psychologie': '#201a2a', 'Pedagogische wetenschappen': '#201a2a', 'Gezinswetenschappen': '#201a2a',
+  'Taal- en letterkunde': '#22181a', 'Geschiedenis': '#22181a', 'Wijsbegeerte': '#22181a',
+};
+const richtingEmoji = {
+  'Rechten': '⚖️', 'Criminologische wetenschappen': '🔍', 'Notariaat': '📋',
+  'Economische wetenschappen': '📈', 'Handelswetenschappen': '💼', 'Handelsingenieur': '📊',
+  'Geneeskunde': '🫀', 'Tandheelkunde': '🦷', 'Farmaceutische wetenschappen': '💊',
+  'Biomedische wetenschappen': '🔬', 'Verpleegkunde en vroedkunde': '🏥',
+  'Ingenieurswetenschappen': '⚙️', 'Bio-ingenieurswetenschappen': '🌱',
+  'Informatica': '💻', 'Wiskunde': '📐', 'Fysica': '⚛️', 'Chemie': '🧪',
+  'Biologie': '🧬', 'Biochemie en biotechnologie': '🔬', 'Psychologie': '🧠',
+  'Pedagogische wetenschappen': '📚', 'Taal- en letterkunde': '📖', 'Geschiedenis': '🏛️',
+  'Architectuur': '🏗️', 'Communicatiewetenschappen': '📡', 'Politieke wetenschappen': '🗳️',
+};
 
 // ─── INIT ───
 window.addEventListener('DOMContentLoaded', () => {
@@ -878,132 +936,86 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('succesEmail').textContent = "✉️ " + CONTACT_EMAIL;
   document.getElementById('succesTel').textContent = "📱 " + CONTACT_TELEFOON;
   document.getElementById('adresText').textContent = "Ophalen kan op " + CONTACT_ADRES + ". Neem vooraf contact op.";
-
-  loadBooksFromSheets();
+  laadBoeken();
   initBoekForm();
 });
 
-// ─── GOOGLE SHEETS LADEN ───
-async function loadBooksFromSheets() {
-  const isDemo = SHEETS_CSV_URL.includes('JOUW_SHEET_ID');
-
-  if (isDemo) {
+// ─── SUPABASE LADEN ───
+async function laadBoeken() {
+  if (!isSupaConfigured) {
     allBooks = demoBooks;
-    renderBooks(allBooks.filter(b => b.status === 'online'));
-    updateStats(allBooks.filter(b => b.status === 'online'));
+    renderBooks(allBooks.filter(b => b.zichtbaar));
+    updateStats(allBooks.filter(b => b.zichtbaar));
     return;
   }
-
   try {
-    const res = await fetch(SHEETS_CSV_URL + '&t=' + Date.now());
-    if (!res.ok) throw new Error('Sheets niet bereikbaar');
-    const text = await res.text();
-    const rows = parseCSV(text);
-
-    // Sla de eerste rij over als die kolomnamen zijn
-    const dataRows = rows[0] && rows[0][0].toLowerCase() === 'titel' ? rows.slice(1) : rows;
-
-    allBooks = dataRows
-      .filter(r => r.length >= 5 && r[0])
-      .map(r => ({
-        titel: r[0] || '',
-        auteur: r[1] || '',
-        richting: r[2] || '',
-        staat: r[3] || '',
-        prijs: parseFloat(r[4]) || 0,
-        emoji: r[5] || '📚',
-        kleur: r[6] || '#1a1a1a',
-        status: (r[7] || 'online').trim().toLowerCase()
-      }));
-
-    const online = allBooks.filter(b => b.status === 'online');
-    renderBooks(online);
-    updateStats(online);
-
-    if (adminLoggedIn) {
-      renderAdminTable();
-      updateAdminStats();
-      document.getElementById('adminSheetsStatus').textContent = '✓ ' + allBooks.length + ' boeken geladen';
-    }
-
-    showNotif('Aanbod verversen geslaagd', 'success');
-  } catch (e) {
+    const { data, error } = await supa.from('boeken').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    allBooks = data;
+    const zichtbaar = allBooks.filter(b => b.zichtbaar);
+    renderBooks(zichtbaar);
+    updateStats(zichtbaar);
+    if (adminLoggedIn) { renderAdminTable(); updateAdminStats(); }
+    showNotif('Aanbod geladen', 'success');
+  } catch(e) {
     console.error(e);
     allBooks = demoBooks;
-    renderBooks(allBooks.filter(b => b.status === 'online'));
-    updateStats(allBooks.filter(b => b.status === 'online'));
-    showNotif('Sheets niet bereikbaar — demodata getoond', 'error');
+    renderBooks(allBooks.filter(b => b.zichtbaar));
+    updateStats(allBooks.filter(b => b.zichtbaar));
+    showNotif('Kon Supabase niet bereiken — demodata getoond', 'error');
   }
-}
-
-// ─── CSV PARSER ───
-function parseCSV(text) {
-  const rows = [];
-  const lines = text.split('\n');
-  for (const line of lines) {
-    if (!line.trim()) continue;
-    const cols = [];
-    let cur = '', inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const c = line[i];
-      if (c === '"') { inQ = !inQ; }
-      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
-      else { cur += c; }
-    }
-    cols.push(cur.trim());
-    rows.push(cols);
-  }
-  return rows;
 }
 
 // ─── BOEKEN RENDEREN ───
 function renderBooks(list) {
   const grid = document.getElementById('booksGrid');
   document.getElementById('bookCount').textContent = list.length + ' resultaten';
-
   if (list.length === 0) {
-    grid.innerHTML = '<div class="empty-state"><div style="font-size:2rem;">📭</div><p>Geen boeken gevonden voor deze zoekopdracht.</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div style="font-size:2rem;">📭</div><p>Geen boeken gevonden.</p></div>';
     return;
   }
-
-  grid.innerHTML = list.map(b => `
-    <div class="book-card" onclick="openModal('${escapeHtml(b.titel)}','${escapeHtml(b.auteur)}','${b.prijs}','${b.staat}')">
-      <div class="book-cover" style="background:${b.kleur}25;">
-        <div class="book-cover-inner" style="background:${b.kleur};">${b.emoji}</div>
+  grid.innerHTML = list.map(b => {
+    const kleur = richtingKleuren[b.richting] || '#1a1a1a';
+    const emoji = richtingEmoji[b.richting] || '📚';
+    return `<div class="book-card" onclick="openModal('${escapeHtml(b.titel)}','${escapeHtml(b.auteur||'')}','${b.prijs}','${b.staat}','${escapeHtml(b.richting||'')}','${escapeHtml(b.jaar||'')}')">
+      <div class="book-cover" style="background:${kleur}25;">
+        <div class="book-cover-inner" style="background:${kleur};">${emoji}</div>
       </div>
       <div class="book-info">
         <div class="book-title">${escapeHtml(b.titel)}</div>
-        <div class="book-meta">${escapeHtml(b.auteur)} · ${escapeHtml(b.richting)}</div>
+        <div class="book-meta">${escapeHtml(b.auteur||'')} · ${escapeHtml(b.richting||'')}${b.jaar ? ' · ' + escapeHtml(b.jaar) : ''}</div>
         <div class="book-footer">
           <div class="book-price">€${b.prijs}</div>
-          <div class="book-staat ${b.staat.toLowerCase()}">${b.staat}</div>
+          <div class="book-staat ${(b.staat||'').toLowerCase()}">${b.staat}</div>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-function updateStats(online) {
-  document.getElementById('statAantal').textContent = online.length;
-  const prijzen = online.map(b => b.prijs).filter(p => p > 0);
+function updateStats(zichtbaar) {
+  document.getElementById('statAantal').textContent = zichtbaar.length;
+  const prijzen = zichtbaar.map(b => b.prijs).filter(p => p > 0);
   const gem = prijzen.length ? Math.round(prijzen.reduce((a,b) => a+b,0) / prijzen.length) : 0;
   document.getElementById('statGemiddeld').textContent = gem > 0 ? '€' + gem : '—';
 }
 
 function escapeHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 // ─── FILTER ───
 function filterBooks() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const richting = document.getElementById('richtingFilter').value;
+  const jaar = document.getElementById('jaarFilter').value;
   const list = allBooks.filter(b => {
-    if (b.status !== 'online') return false;
-    const matchQ = !q || b.titel.toLowerCase().includes(q) || b.auteur.toLowerCase().includes(q);
+    if (!b.zichtbaar) return false;
+    const matchQ = !q || (b.titel||'').toLowerCase().includes(q) || (b.auteur||'').toLowerCase().includes(q);
     const matchR = !richting || b.richting === richting;
+    const matchJ = !jaar || b.jaar === jaar;
     const matchF = activeFilter === 'alle' || b.staat === activeFilter;
-    return matchQ && matchR && matchF;
+    return matchQ && matchR && matchJ && matchF;
   });
   renderBooks(list);
 }
@@ -1024,23 +1036,16 @@ function showPage(name) {
 }
 
 // ─── MODAL ───
-function openModal(titel, auteur, prijs, staat) {
+function openModal(titel, auteur, prijs, staat, richting, jaar) {
   document.getElementById('modalTitle').textContent = titel;
-  document.getElementById('modalDesc').textContent = `${auteur} · ${staat} · €${prijs} — Neem contact op om dit boek op te halen of te laten bezorgen.`;
+  document.getElementById('modalDesc').textContent = `${auteur} · ${richting}${jaar ? ' · ' + jaar : ''} · ${staat} · €${prijs} — Neem contact op om dit boek op te halen of te laten bezorgen.`;
   document.getElementById('contactModal').classList.add('open');
 }
+function closeModal() { document.getElementById('contactModal').classList.remove('open'); }
 
-function closeModal() {
-  document.getElementById('contactModal').classList.remove('open');
-}
-
-// ─── ISBN OPHALEN ───
 // ─── MULTI-BOEK FORMULIER ───
-let boekIndex = 0;
-
 function richtingOpties() {
-  return `
-    <option value="">Selecteer richting</option>
+  return `<option value="">Selecteer richting</option>
     <optgroup label="── Economie & Bedrijfswetenschappen">
       <option>Economische wetenschappen</option><option>Handelswetenschappen</option>
       <option>Handelsingenieur</option><option>Handelsingenieur in de beleidsinformatica</option>
@@ -1091,8 +1096,7 @@ function richtingOpties() {
 }
 
 function jaarOpties() {
-  return `
-    <option value="">Selecteer jaar</option>
+  return `<option value="">Selecteer jaar</option>
     <optgroup label="── Bachelor">
       <option>Bachelor 1</option><option>Bachelor 2</option><option>Bachelor 3</option>
     </optgroup>
@@ -1116,7 +1120,7 @@ function boekTemplate(idx) {
         <input type="text" class="form-control" id="isbn-${idx}" placeholder="bijv. 9780131103627">
         <button type="button" class="isbn-fetch" onclick="fetchISBN(${idx})">↗ Ophalen</button>
       </div>
-      <div style="font-size:12px;color:var(--text3);margin-top:4px;">Optioneel — we halen automatisch de boekinfo op</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px;">Optioneel — boekinfo wordt automatisch ingevuld</div>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -1180,8 +1184,7 @@ function hernummerBoeken() {
 }
 
 function updateBoekTeller() {
-  const aantal = document.querySelectorAll('.boek-blok').length;
-  document.getElementById('boekTeller').textContent = '(' + aantal + ')';
+  document.getElementById('boekTeller').textContent = '(' + document.querySelectorAll('.boek-blok').length + ')';
 }
 
 function initBoekForm() {
@@ -1214,7 +1217,7 @@ async function fetchISBN(idx) {
   btn.textContent = '↗ Ophalen'; btn.disabled = false;
 }
 
-// ─── FORMSPREE SUBMIT ───
+// ─── SUPABASE SUBMIT ───
 async function submitForm(e) {
   e.preventDefault();
   const naam = document.getElementById('verkNaam').value;
@@ -1228,12 +1231,14 @@ async function submitForm(e) {
     if (!titel) return;
     boeken.push({
       titel,
-      auteur: document.getElementById('auteur-' + id).value,
-      richting: document.getElementById('richting-' + id).value,
-      jaar: document.getElementById('jaar-' + id).value,
-      staat: document.getElementById('staat-' + id).value,
-      prijs: document.getElementById('prijs-' + id).value,
-      desc: document.getElementById('desc-' + id).value
+      auteur: document.getElementById('auteur-' + id).value || null,
+      richting: document.getElementById('richting-' + id).value || null,
+      jaar: document.getElementById('jaar-' + id).value || null,
+      staat: document.getElementById('staat-' + id).value || null,
+      prijs: parseFloat(document.getElementById('prijs-' + id).value) || 0,
+      beschrijving: document.getElementById('desc-' + id).value || null,
+      naam, email, telefoon: tel || null,
+      zichtbaar: true
     });
   });
 
@@ -1241,34 +1246,23 @@ async function submitForm(e) {
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Versturen…';
+  btn.innerHTML = '<span class="spinner"></span> Plaatsen…';
 
-  const boekenTekst = boeken.map((b, i) =>
-    `Boek ${i+1}: ${b.titel} | ${b.auteur} | ${b.richting} | ${b.jaar} | ${b.staat} | €${b.prijs}${b.desc ? ' | ' + b.desc : ''}`
-  ).join('\n');
-
-  const isDemo = FORMSPREE_URL.includes('JOUW_FORM_ID');
-  if (isDemo) {
-    await new Promise(r => setTimeout(r, 1200));
-    showSuccess(); btn.disabled = false; btn.textContent = 'Aanmelding versturen →'; return;
+  if (!isSupaConfigured) {
+    await new Promise(r => setTimeout(r, 1000));
+    showSuccess(); btn.disabled = false; btn.textContent = 'Boek(en) plaatsen →'; return;
   }
 
   try {
-    const res = await fetch(FORMSPREE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        naam, email, telefoon: tel,
-        aantal_boeken: boeken.length,
-        boeken: boekenTekst,
-        _subject: `BoekenHub — ${boeken.length} boek(en) aangeboden door ${naam}`
-      })
-    });
-    if (res.ok) { showSuccess(); }
-    else { showNotif('Er ging iets mis. Probeer opnieuw.', 'error'); }
-  } catch(e) { showNotif('Geen verbinding. Probeer opnieuw.', 'error'); }
-
-  btn.disabled = false; btn.textContent = 'Aanmelding versturen →';
+    const { error } = await supa.from('boeken').insert(boeken);
+    if (error) throw error;
+    await laadBoeken();
+    showSuccess();
+  } catch(e) {
+    console.error(e);
+    showNotif('Er ging iets mis: ' + e.message, 'error');
+  }
+  btn.disabled = false; btn.textContent = 'Boek(en) plaatsen →';
 }
 
 function showSuccess() {
@@ -1296,14 +1290,13 @@ function openAdmin() {
 }
 
 function checkAdmin() {
-  const pw = document.getElementById('adminPw').value;
-  if (pw === ADMIN_WACHTWOORD) {
+  if (document.getElementById('adminPw').value === ADMIN_WACHTWOORD) {
     adminLoggedIn = true;
     document.getElementById('adminLogin').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
     renderAdminTable();
     updateAdminStats();
-    loadBooksFromSheets();
+    laadBoeken();
   } else {
     document.getElementById('loginError').style.display = 'block';
   }
@@ -1326,47 +1319,55 @@ function adminTab(el, filter) {
 
 function renderAdminTable() {
   const tbody = document.getElementById('adminTableBody');
-  const list = adminTabFilter === 'alle' ? allBooks : allBooks.filter(b => b.status === adminTabFilter);
+  const list = adminTabFilter === 'alle' ? allBooks
+    : adminTabFilter === 'zichtbaar' ? allBooks.filter(b => b.zichtbaar)
+    : allBooks.filter(b => !b.zichtbaar);
 
   if (list.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:2rem;">Geen boeken in deze categorie</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2rem;">Geen boeken in deze categorie</td></tr>';
     return;
   }
 
   tbody.innerHTML = list.map(b => `
     <tr>
-      <td style="font-weight:500;max-width:220px;">${escapeHtml(b.titel)}</td>
-      <td style="color:var(--text2);">${escapeHtml(b.richting)}</td>
+      <td style="font-weight:500;max-width:200px;">${escapeHtml(b.titel)}</td>
+      <td style="color:var(--text2);font-size:13px;">${escapeHtml(b.richting||'')}${b.jaar ? '<br><span style="color:var(--text3);font-size:11px;">'+escapeHtml(b.jaar)+'</span>' : ''}</td>
       <td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent);">€${b.prijs}</td>
-      <td>${escapeHtml(b.staat)}</td>
-      <td><span class="status-badge status-${b.status}">${b.status === 'wacht' ? 'In afwachting' : b.status === 'online' ? 'Online' : 'Verkocht'}</span></td>
+      <td>${escapeHtml(b.staat||'')}</td>
+      <td style="font-size:12px;color:var(--text2);">${escapeHtml(b.naam||'')}${b.email ? '<br><span style="color:var(--text3);">'+escapeHtml(b.email)+'</span>' : ''}</td>
+      <td><span class="status-badge ${b.zichtbaar ? 'status-online' : 'status-verkocht'}">${b.zichtbaar ? 'Zichtbaar' : 'Verborgen'}</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="action-btn ${b.zichtbaar ? '' : 'approve'}" onclick="toggleZichtbaar('${b.id}',${b.zichtbaar})">
+          ${b.zichtbaar ? '🙈 Verbergen' : '👁 Tonen'}
+        </button>
+        <button class="action-btn danger" onclick="verwijderBoekAdmin('${b.id}')">🗑 Verwijder</button>
+      </td>
     </tr>
   `).join('');
 }
 
 function updateAdminStats() {
-  document.getElementById('adminStatOnline').textContent = allBooks.filter(b=>b.status==='online').length;
-  document.getElementById('adminStatWacht').textContent = allBooks.filter(b=>b.status==='wacht').length;
-  document.getElementById('adminStatVerkocht').textContent = allBooks.filter(b=>b.status==='verkocht').length;
+  document.getElementById('adminStatOnline').textContent = allBooks.filter(b => b.zichtbaar).length;
+  document.getElementById('adminStatWacht').textContent = allBooks.filter(b => !b.zichtbaar).length;
+  document.getElementById('adminStatVerkocht').textContent = allBooks.length;
   document.getElementById('adminStatTotaal').textContent = allBooks.length;
 }
 
-// ─── SHEET ROW GENERATOR ───
-function generateSheetRow() {
-  const titel = document.getElementById('adminTitel').value;
-  const auteur = document.getElementById('adminAuteur').value;
-  const richting = document.getElementById('adminRichting').value;
-  const staat = document.getElementById('adminStaat').value;
-  const prijs = document.getElementById('adminPrijs').value;
-  const emoji = document.getElementById('adminEmoji').value || '📚';
-  const kleuren = { Rechten:'#1a2a1a', Economie:'#1a1a2a', Geneeskunde:'#2a1a1a', Ingenieurswetenschappen:'#1a2020', Psychologie:'#201a2a', Informatica:'#1a1820', Andere:'#1a1a1a' };
-  const kleur = kleuren[richting] || '#1a1a1a';
+async function toggleZichtbaar(id, huidig) {
+  if (!isSupaConfigured) { showNotif('Supabase niet geconfigureerd', 'error'); return; }
+  const { error } = await supa.from('boeken').update({ zichtbaar: !huidig }).eq('id', id);
+  if (error) { showNotif('Fout: ' + error.message, 'error'); return; }
+  await laadBoeken();
+  showNotif(huidig ? 'Boek verborgen' : 'Boek zichtbaar gezet', 'success');
+}
 
-  const row = [titel, auteur, richting, staat, prijs, emoji, kleur, 'online'].join('\t');
-  const out = document.getElementById('sheetRowOutput');
-  out.style.display = 'block';
-  out.innerHTML = `<div style="margin-bottom:6px;color:var(--text3);">Kopieer en plak in Google Sheets (Tab-gescheiden):</div>${escapeHtml(row)}`;
-  showNotif('Rij gegenereerd — kopieer naar Sheets!', 'success');
+async function verwijderBoekAdmin(id) {
+  if (!confirm('Weet je zeker dat je dit boek permanent wil verwijderen?')) return;
+  if (!isSupaConfigured) { showNotif('Supabase niet geconfigureerd', 'error'); return; }
+  const { error } = await supa.from('boeken').delete().eq('id', id);
+  if (error) { showNotif('Fout: ' + error.message, 'error'); return; }
+  await laadBoeken();
+  showNotif('Boek verwijderd', 'success');
 }
 
 // ─── NOTIFICATIES ───
@@ -1379,11 +1380,12 @@ function showNotif(msg, type='success') {
   notifTimer = setTimeout(() => { el.className = 'notif'; }, 3500);
 }
 
-// Sluit modal bij klik buiten
 document.getElementById('contactModal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 </script>
+
+</body>
 
 </body>
 </html>
