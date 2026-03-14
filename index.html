@@ -425,7 +425,7 @@
   // │  en plak de endpoint hier (bijv. https://formspree.io/f/xxx)│
   // └─────────────────────────────────────────────────────────────┘
   const SUPABASE_URL = "https://mkvpkcbtzxvgfwpcnanu.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_Uf73kgjrGW3n63jgr7KZLQ_cy0-_u2I"; // vervang met jouw anon public key (begint met eyJ...)
+  const SUPABASE_KEY = "JOUW_ANON_KEY"; // vervang met jouw anon public key (begint met eyJ...)
 
   // ── Contactgegevens ──
   const CONTACT_TELEFOON = "+32 485 69 24 94";
@@ -488,13 +488,62 @@
       <input type="text" class="search-input" placeholder="Zoek op titel, auteur of ISBN…" id="searchInput" oninput="filterBooks()">
       <select class="search-input" style="flex:0 0 auto;width:auto;cursor:pointer;" id="richtingFilter" onchange="filterBooks()">
         <option value="">Alle richtingen</option>
-        <option>Rechten</option>
-        <option>Economie</option>
-        <option>Geneeskunde</option>
-        <option>Ingenieurswetenschappen</option>
-        <option>Psychologie</option>
-        <option>Informatica</option>
-        <option>Andere</option>
+        <optgroup label="── Economie &amp; Bedrijfswetenschappen">
+          <option>Economische wetenschappen</option><option>Handelswetenschappen</option>
+          <option>Handelsingenieur</option><option>Handelsingenieur in de beleidsinformatica</option>
+          <option>Toegepaste economische wetenschappen</option>
+        </optgroup>
+        <optgroup label="── Geneeskunde &amp; Gezondheid">
+          <option>Geneeskunde</option><option>Tandheelkunde</option>
+          <option>Farmaceutische wetenschappen</option><option>Biomedische wetenschappen</option>
+          <option>Verpleegkunde en vroedkunde</option><option>Lichamelijke opvoeding en bewegingswetenschappen</option>
+          <option>Revalidatiewetenschappen en kinesitherapie</option><option>Logopedie en audiologie</option>
+        </optgroup>
+        <optgroup label="── Ingenieurswetenschappen">
+          <option>Ingenieurswetenschappen</option><option>Ingenieurswetenschappen: architectuur</option>
+          <option>Bio-ingenieurswetenschappen</option><option>Industriële wetenschappen</option>
+          <option>Industriële ingenieurswetenschappen</option>
+        </optgroup>
+        <optgroup label="── Wetenschappen">
+          <option>Informatica</option><option>Wiskunde</option><option>Fysica</option>
+          <option>Chemie</option><option>Biologie</option><option>Biochemie en biotechnologie</option>
+          <option>Geografie</option><option>Statistiek en data-analyse</option>
+        </optgroup>
+        <optgroup label="── Rechten &amp; Criminologie">
+          <option>Rechten</option><option>Criminologische wetenschappen</option><option>Notariaat</option>
+        </optgroup>
+        <optgroup label="── Letteren &amp; Talen">
+          <option>Taal- en letterkunde</option><option>Geschiedenis</option>
+          <option>Wijsbegeerte</option><option>Latijn en Grieks</option>
+          <option>Religiestudies</option><option>Musicologie</option>
+        </optgroup>
+        <optgroup label="── Sociale Wetenschappen">
+          <option>Sociologie</option><option>Communicatiewetenschappen</option>
+          <option>Politieke wetenschappen</option><option>Toegepaste taalkunde</option>
+        </optgroup>
+        <optgroup label="── Psychologie &amp; Pedagogiek">
+          <option>Psychologie</option><option>Pedagogische wetenschappen</option><option>Gezinswetenschappen</option>
+        </optgroup>
+        <optgroup label="── Architectuur &amp; Kunst">
+          <option>Architectuur</option><option>Interieurarchitectuur</option>
+          <option>Stedenbouw en ruimtelijke planning</option>
+        </optgroup>
+        <optgroup label="── Theologie">
+          <option>Theologie</option><option>Godgeleerdheid</option><option>Kerkelijk recht</option>
+        </optgroup>
+        <option value="Andere">Andere opleiding</option>
+      </select>
+      <select class="search-input" style="flex:0 0 auto;width:auto;cursor:pointer;" id="jaarFilter" onchange="filterBooks()">
+        <option value="">Alle jaren</option>
+        <optgroup label="── Bachelor">
+          <option>Bachelor 1</option><option>Bachelor 2</option><option>Bachelor 3</option>
+        </optgroup>
+        <optgroup label="── Master">
+          <option>Master 1</option><option>Master 2</option>
+        </optgroup>
+        <optgroup label="── Andere">
+          <option>Schakelprogramma</option><option>Manama</option><option>Doctoraatsopleiding</option>
+        </optgroup>
       </select>
     </div>
 
@@ -930,12 +979,14 @@ function escapeHtml(s) {
 function filterBooks() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const richting = document.getElementById('richtingFilter').value;
+  const jaar = document.getElementById('jaarFilter').value;
   const list = allBooks.filter(b => {
     if (!b.zichtbaar) return false;
     const matchQ = !q || (b.titel||'').toLowerCase().includes(q) || (b.auteur||'').toLowerCase().includes(q);
     const matchR = !richting || b.richting === richting;
+    const matchJ = !jaar || b.jaar === jaar;
     const matchF = activeFilter === 'alle' || b.staat === activeFilter;
-    return matchQ && matchR && matchF;
+    return matchQ && matchR && matchJ && matchF;
   });
   renderBooks(list);
 }
