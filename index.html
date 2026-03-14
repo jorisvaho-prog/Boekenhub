@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -501,13 +500,100 @@
       <input type="text" class="search-input" placeholder="Zoek op titel, auteur of ISBN…" id="searchInput" oninput="filterBooks()">
       <select class="search-input" style="flex:0 0 auto;width:auto;cursor:pointer;" id="richtingFilter" onchange="filterBooks()">
         <option value="">Alle richtingen</option>
-        <option>Rechten</option>
-        <option>Economie</option>
-        <option>Geneeskunde</option>
-        <option>Ingenieurswetenschappen</option>
-        <option>Psychologie</option>
-        <option>Informatica</option>
-        <option>Andere</option>
+        <optgroup label="── Economie & Bedrijfswetenschappen">
+          <option>Economische wetenschappen</option>
+          <option>Handelswetenschappen</option>
+          <option>Handelsingenieur</option>
+          <option>Handelsingenieur in de beleidsinformatica</option>
+          <option>Toegepaste economische wetenschappen</option>
+        </optgroup>
+        <optgroup label="── Geneeskunde & Gezondheid">
+          <option>Geneeskunde</option>
+          <option>Tandheelkunde</option>
+          <option>Farmaceutische wetenschappen</option>
+          <option>Biomedische wetenschappen</option>
+          <option>Verpleegkunde en vroedkunde</option>
+          <option>Lichamelijke opvoeding en bewegingswetenschappen</option>
+          <option>Revalidatiewetenschappen en kinesitherapie</option>
+          <option>Logopedie en audiologie</option>
+        </optgroup>
+        <optgroup label="── Ingenieurswetenschappen & Technologie">
+          <option>Ingenieurswetenschappen</option>
+          <option>Ingenieurswetenschappen: architectuur</option>
+          <option>Bio-ingenieurswetenschappen</option>
+          <option>Industriële wetenschappen</option>
+          <option>Industriële ingenieurswetenschappen</option>
+        </optgroup>
+        <optgroup label="── Wetenschappen">
+          <option>Informatica</option>
+          <option>Wiskunde</option>
+          <option>Fysica</option>
+          <option>Chemie</option>
+          <option>Biologie</option>
+          <option>Biochemie en biotechnologie</option>
+          <option>Biowetenschappen</option>
+          <option>Geografie</option>
+          <option>Geologie</option>
+          <option>Geowetenschappen</option>
+          <option>Statistiek en data-analyse</option>
+        </optgroup>
+        <optgroup label="── Rechten & Criminologie">
+          <option>Rechten</option>
+          <option>Criminologische wetenschappen</option>
+          <option>Notariaat</option>
+        </optgroup>
+        <optgroup label="── Letteren & Talen">
+          <option>Taal- en letterkunde</option>
+          <option>Geschiedenis</option>
+          <option>Kunstwetenschappen en archeologie</option>
+          <option>Archeologie</option>
+          <option>Wijsbegeerte</option>
+          <option>Latijn en Grieks</option>
+          <option>Religiestudies</option>
+          <option>Musicologie</option>
+        </optgroup>
+        <optgroup label="── Sociale Wetenschappen">
+          <option>Sociologie</option>
+          <option>Sociale wetenschappen</option>
+          <option>Communicatiewetenschappen</option>
+          <option>Politieke wetenschappen</option>
+          <option>Toegepaste taalkunde</option>
+          <option>Taal- en regiostudies</option>
+        </optgroup>
+        <optgroup label="── Psychologie & Pedagogiek">
+          <option>Psychologie</option>
+          <option>Pedagogische wetenschappen</option>
+          <option>Logopedie en audiologie</option>
+          <option>Gezinswetenschappen</option>
+        </optgroup>
+        <optgroup label="── Architectuur & Kunst">
+          <option>Architectuur</option>
+          <option>Interieurarchitectuur</option>
+          <option>Stedenbouw en ruimtelijke planning</option>
+        </optgroup>
+        <optgroup label="── Theologie & Godgeleerdheid">
+          <option>Theologie</option>
+          <option>Godgeleerdheid</option>
+          <option>Kerkelijk recht</option>
+        </optgroup>
+        <option value="Andere">Andere opleiding</option>
+      </select>
+      <select class="search-input" style="flex:0 0 auto;width:auto;cursor:pointer;" id="jaarFilter" onchange="filterBooks()">
+        <option value="">Alle jaren</option>
+        <optgroup label="── Bachelor">
+          <option>Bachelor 1</option>
+          <option>Bachelor 2</option>
+          <option>Bachelor 3</option>
+        </optgroup>
+        <optgroup label="── Master">
+          <option>Master 1</option>
+          <option>Master 2</option>
+        </optgroup>
+        <optgroup label="── Andere">
+          <option>Schakelprogramma</option>
+          <option>Manama</option>
+          <option>Doctoraatsopleiding</option>
+        </optgroup>
       </select>
     </div>
 
@@ -606,49 +692,179 @@
 
 <!-- ═══════════ VERKOOP PAGE ═══════════ -->
 <div class="page" id="page-verkoop">
-  <div class="form-section" id="formContainer" style="max-width:680px;">
-    <div class="form-title">Boeken aanbieden</div>
-    <div class="form-subtitle">Vul je gegevens één keer in en voeg al je boeken toe.</div>
+  <div class="form-section" id="formContainer">
+    <div class="form-title">Boek aanbieden</div>
+    <div class="form-subtitle">Vul het formulier in. Wij nemen contact op om alles te regelen.</div>
 
+    <!-- Formspree form -->
     <form id="verkoopForm" onsubmit="submitForm(event)">
 
-      <!-- CONTACTGEGEVENS — eenmalig -->
-      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:2rem;">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:1rem;">Jouw gegevens</div>
-        <div class="form-row">
-          <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">Naam *</label>
-            <input type="text" class="form-control" id="verkNaam" placeholder="Voornaam en achternaam" required>
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">E-mail *</label>
-            <input type="email" class="form-control" id="verkEmail" placeholder="jouw@email.com" required>
-          </div>
+      <div class="form-group">
+        <label class="form-label">ISBN-nummer</label>
+        <div class="isbn-row">
+          <input type="text" class="form-control" name="isbn" placeholder="bijv. 9780131103627" id="isbnInput">
+          <button type="button" class="isbn-fetch" onclick="fetchISBN()">↗ Ophalen</button>
         </div>
-        <div class="form-group" style="margin-top:0.75rem;margin-bottom:0;">
-          <label class="form-label">Telefoonnummer (optioneel)</label>
-          <input type="tel" class="form-control" id="verkTel" placeholder="+32 (0)4xx xx xx xx">
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;">Optioneel — we halen automatisch de boekinfo op</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Titel *</label>
+          <input type="text" class="form-control" name="titel" placeholder="Titel van het boek" id="boekTitel" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Auteur</label>
+          <input type="text" class="form-control" name="auteur" placeholder="Auteur(s)" id="boekAuteur">
         </div>
       </div>
 
-      <!-- BOEKEN -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">
-          Boeken <span id="boekTeller" style="color:var(--text3);font-weight:400;font-size:13px;">(1)</span>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Richting / opleiding *</label>
+          <select class="form-control" name="richting" id="boekRichting" required>
+            <option value="">Selecteer richting</option>
+            <optgroup label="── Economie & Bedrijfswetenschappen">
+              <option>Economische wetenschappen</option>
+              <option>Handelswetenschappen</option>
+              <option>Handelsingenieur</option>
+              <option>Handelsingenieur in de beleidsinformatica</option>
+              <option>Toegepaste economische wetenschappen</option>
+            </optgroup>
+            <optgroup label="── Geneeskunde & Gezondheid">
+              <option>Geneeskunde</option>
+              <option>Tandheelkunde</option>
+              <option>Farmaceutische wetenschappen</option>
+              <option>Biomedische wetenschappen</option>
+              <option>Verpleegkunde en vroedkunde</option>
+              <option>Lichamelijke opvoeding en bewegingswetenschappen</option>
+              <option>Revalidatiewetenschappen en kinesitherapie</option>
+              <option>Logopedie en audiologie</option>
+            </optgroup>
+            <optgroup label="── Ingenieurswetenschappen & Technologie">
+              <option>Ingenieurswetenschappen</option>
+              <option>Ingenieurswetenschappen: architectuur</option>
+              <option>Bio-ingenieurswetenschappen</option>
+              <option>Industriële wetenschappen</option>
+              <option>Industriële ingenieurswetenschappen</option>
+            </optgroup>
+            <optgroup label="── Wetenschappen">
+              <option>Informatica</option>
+              <option>Wiskunde</option>
+              <option>Fysica</option>
+              <option>Chemie</option>
+              <option>Biologie</option>
+              <option>Biochemie en biotechnologie</option>
+              <option>Biowetenschappen</option>
+              <option>Geografie</option>
+              <option>Geologie</option>
+              <option>Geowetenschappen</option>
+              <option>Statistiek en data-analyse</option>
+            </optgroup>
+            <optgroup label="── Rechten & Criminologie">
+              <option>Rechten</option>
+              <option>Criminologische wetenschappen</option>
+              <option>Notariaat</option>
+            </optgroup>
+            <optgroup label="── Letteren & Talen">
+              <option>Taal- en letterkunde</option>
+              <option>Geschiedenis</option>
+              <option>Kunstwetenschappen en archeologie</option>
+              <option>Archeologie</option>
+              <option>Wijsbegeerte</option>
+              <option>Latijn en Grieks</option>
+              <option>Religiestudies</option>
+              <option>Musicologie</option>
+            </optgroup>
+            <optgroup label="── Sociale Wetenschappen">
+              <option>Sociologie</option>
+              <option>Sociale wetenschappen</option>
+              <option>Communicatiewetenschappen</option>
+              <option>Politieke wetenschappen</option>
+              <option>Toegepaste taalkunde</option>
+              <option>Taal- en regiostudies</option>
+            </optgroup>
+            <optgroup label="── Psychologie & Pedagogiek">
+              <option>Psychologie</option>
+              <option>Pedagogische wetenschappen</option>
+              <option>Gezinswetenschappen</option>
+            </optgroup>
+            <optgroup label="── Architectuur & Kunst">
+              <option>Architectuur</option>
+              <option>Interieurarchitectuur</option>
+              <option>Stedenbouw en ruimtelijke planning</option>
+            </optgroup>
+            <optgroup label="── Theologie & Godgeleerdheid">
+              <option>Theologie</option>
+              <option>Godgeleerdheid</option>
+              <option>Kerkelijk recht</option>
+            </optgroup>
+            <option value="Andere">Andere opleiding</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jaar *</label>
+          <select class="form-control" name="jaar" id="boekJaar" required>
+            <option value="">Selecteer jaar</option>
+            <optgroup label="── Bachelor">
+              <option>Bachelor 1</option>
+              <option>Bachelor 2</option>
+              <option>Bachelor 3</option>
+            </optgroup>
+            <optgroup label="── Master">
+              <option>Master 1</option>
+              <option>Master 2</option>
+            </optgroup>
+            <optgroup label="── Andere">
+              <option>Schakelprogramma</option>
+              <option>Manama</option>
+              <option>Doctoraatsopleiding</option>
+            </optgroup>
+          </select>
         </div>
       </div>
 
-      <div id="boekenLijst"></div>
+      <div class="form-group">
+        <label class="form-label">Staat van het boek *</label>
+        <select class="form-control" name="staat" id="boekStaat" required>
+          <option value="">Selecteer staat</option>
+          <option>Nieuw</option>
+          <option>Goed</option>
+          <option>Matig</option>
+        </select>
+      </div>
 
-      <button type="button" onclick="voegBoekToe()"
-        style="width:100%;background:transparent;border:1px dashed var(--border2);border-radius:var(--radius);padding:0.85rem;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s;margin-bottom:1.5rem;"
-        onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
-        onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
-        + Nog een boek toevoegen
-      </button>
+      <div class="form-group">
+        <label class="form-label">Jouw vraagprijs (€) *</label>
+        <input type="number" class="form-control" name="prijs" placeholder="bijv. 15" id="boekPrijs" min="1" max="200" required style="max-width:160px;">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Beschrijving (optioneel)</label>
+        <textarea class="form-control" name="beschrijving" placeholder="Opmerkingen: notities, ontbrekende pagina's, editie, enz."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Jouw naam *</label>
+        <input type="text" class="form-control" name="naam" placeholder="Voornaam en achternaam" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">E-mail *</label>
+        <input type="email" class="form-control" name="email" placeholder="jouw@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Telefoonnummer (optioneel)</label>
+        <input type="tel" class="form-control" name="telefoon" placeholder="+32 (0)4xx xx xx xx">
+      </div>
+
+      <!-- Verborgen veld voor Formspree redirect -->
+      <input type="hidden" name="_subject" value="Nieuw boek aangeboden op BoekenHub Leuven">
+      <input type="hidden" name="_next" value="">
 
       <button type="submit" class="form-submit" id="submitBtn">Aanmelding versturen →</button>
-      <div class="form-note">Na het insturen nemen we contact met je op. Breng de boeken daarna langs op onze locatie in Leuven.</div>
+      <div class="form-note">Na het insturen nemen we contact met je op. Breng het boek daarna langs op onze locatie in Leuven.</div>
 
     </form>
   </div>
@@ -656,13 +872,13 @@
   <div class="success-screen" id="successScreen">
     <div class="success-icon">✓</div>
     <div class="form-title" style="margin-bottom:0.5rem;">Aanmelding ontvangen!</div>
-    <p style="color:var(--text2);font-size:15px;max-width:420px;margin:0 auto 1rem;font-weight:300;">We nemen snel contact met je op via e-mail. Breng je boek(en) daarna langs op onze locatie.</p>
+    <p style="color:var(--text2);font-size:15px;max-width:420px;margin:0 auto 1rem;font-weight:300;">We nemen snel contact met je op via e-mail. Breng je boek daarna langs op onze locatie.</p>
     <div class="contact-card" style="max-width:320px;margin:0 auto 2rem;">
       <div class="label">Onze contactgegevens</div>
       <div class="line" id="succesEmail"></div>
       <div class="line" id="succesTel"></div>
     </div>
-    <button class="btn-primary" style="padding:0.75rem 1.75rem;" onclick="resetForm()">Nog boeken aanbieden</button>
+    <button class="btn-primary" style="padding:0.75rem 1.75rem;" onclick="resetForm()">Nog een boek aanbieden</button>
   </div>
 </div>
 
@@ -808,6 +1024,7 @@
               <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">F: emoji</td>
               <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">G: kleur</td>
               <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">H: status</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">I: jaar</td>
             </tr>
             <tr>
               <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Beginselen v. privaatrecht</td>
@@ -863,12 +1080,12 @@ let adminTabFilter = 'alle';
 
 // Standaard boeken als Google Sheets nog niet geconfigureerd is
 const demoBooks = [
-  { titel: "Beginselen van Belgisch privaatrecht", auteur: "Dirix & Sagaert", richting: "Rechten", staat: "Goed", prijs: 22, emoji: "⚖️", kleur: "#1a2a1a", status: "online" },
-  { titel: "Microeconomie", auteur: "Pindyck & Rubinfeld", richting: "Economie", staat: "Nieuw", prijs: 18, emoji: "📈", kleur: "#1a1a2a", status: "online" },
-  { titel: "Anatomie van de mens", auteur: "Gray's Anatomy NL", richting: "Geneeskunde", staat: "Goed", prijs: 35, emoji: "🫀", kleur: "#2a1a1a", status: "online" },
-  { titel: "Thermodynamica", auteur: "Çengel & Boles", richting: "Ingenieurswetenschappen", staat: "Matig", prijs: 28, emoji: "⚙️", kleur: "#1a2020", status: "online" },
-  { titel: "Ontwikkelingspsychologie", auteur: "Santrock", richting: "Psychologie", staat: "Goed", prijs: 16, emoji: "🧠", kleur: "#201a2a", status: "online" },
-  { titel: "Algoritmen en datastructuren", auteur: "Cormen et al.", richting: "Informatica", staat: "Nieuw", prijs: 20, emoji: "💻", kleur: "#1a1820", status: "online" },
+  { titel: "Beginselen van Belgisch privaatrecht", auteur: "Dirix & Sagaert", richting: "Rechten", staat: "Goed", prijs: 22, emoji: "⚖️", kleur: "#1a2a1a", status: "online", jaar: "Bachelor 2" },
+  { titel: "Microeconomie", auteur: "Pindyck & Rubinfeld", richting: "Economische wetenschappen", staat: "Nieuw", prijs: 18, emoji: "📈", kleur: "#1a1a2a", status: "online", jaar: "Bachelor 1" },
+  { titel: "Anatomie van de mens", auteur: "Gray's Anatomy NL", richting: "Geneeskunde", staat: "Goed", prijs: 35, emoji: "🫀", kleur: "#2a1a1a", status: "online", jaar: "Bachelor 2" },
+  { titel: "Thermodynamica", auteur: "Çengel & Boles", richting: "Ingenieurswetenschappen", staat: "Matig", prijs: 28, emoji: "⚙️", kleur: "#1a2020", status: "online", jaar: "Master 1" },
+  { titel: "Ontwikkelingspsychologie", auteur: "Santrock", richting: "Psychologie", staat: "Goed", prijs: 16, emoji: "🧠", kleur: "#201a2a", status: "online", jaar: "Bachelor 3" },
+  { titel: "Algoritmen en datastructuren", auteur: "Cormen et al.", richting: "Informatica", staat: "Nieuw", prijs: 20, emoji: "💻", kleur: "#1a1820", status: "online", jaar: "Bachelor 2" },
 ];
 
 // ─── INIT ───
@@ -881,7 +1098,6 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('adresText').textContent = "Ophalen kan op " + CONTACT_ADRES + ". Neem vooraf contact op.";
 
   loadBooksFromSheets();
-  initBoekForm();
 });
 
 // ─── GOOGLE SHEETS LADEN ───
@@ -914,7 +1130,8 @@ async function loadBooksFromSheets() {
         prijs: parseFloat(r[4]) || 0,
         emoji: r[5] || '📚',
         kleur: r[6] || '#1a1a1a',
-        status: (r[7] || 'online').trim().toLowerCase()
+        status: (r[7] || 'online').trim().toLowerCase(),
+        jaar: r[8] ? r[8].trim() : ''
       }));
 
     const online = allBooks.filter(b => b.status === 'online');
@@ -974,7 +1191,7 @@ function renderBooks(list) {
       </div>
       <div class="book-info">
         <div class="book-title">${escapeHtml(b.titel)}</div>
-        <div class="book-meta">${escapeHtml(b.auteur)} · ${escapeHtml(b.richting)}</div>
+        <div class="book-meta">${escapeHtml(b.auteur)} · ${escapeHtml(b.richting)}${b.jaar ? ' · ' + escapeHtml(b.jaar) : ''}</div>
         <div class="book-footer">
           <div class="book-price">€${b.prijs}</div>
           <div class="book-staat ${b.staat.toLowerCase()}">${b.staat}</div>
@@ -999,12 +1216,14 @@ function escapeHtml(s) {
 function filterBooks() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const richting = document.getElementById('richtingFilter').value;
+  const jaar = document.getElementById('jaarFilter').value;
   const list = allBooks.filter(b => {
     if (b.status !== 'online') return false;
     const matchQ = !q || b.titel.toLowerCase().includes(q) || b.auteur.toLowerCase().includes(q);
     const matchR = !richting || b.richting === richting;
+    const matchJ = !jaar || b.jaar === jaar;
     const matchF = activeFilter === 'alle' || b.staat === activeFilter;
-    return matchQ && matchR && matchF;
+    return matchQ && matchR && matchJ && matchF;
   });
   renderBooks(list);
 }
@@ -1021,7 +1240,6 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (name === 'verkoop') initBoekForm();
 }
 
 // ─── MODAL ───
@@ -1036,106 +1254,13 @@ function closeModal() {
 }
 
 // ─── ISBN OPHALEN ───
-// ─── MULTI-BOEK FORMULIER ───
-let boekIndex = 0;
-
-function boekTemplate(idx) {
-  return `<div class="boek-blok" id="boek-${idx}" style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text2);">Boek <span class="boek-nr">${idx+1}</span></div>
-      ${idx > 0 ? `<button type="button" onclick="verwijderBoek(${idx})" style="background:transparent;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color 0.2s;" onmouseover="this.style.color='#e24b4a'" onmouseout="this.style.color='var(--text3)'">✕ Verwijderen</button>` : ''}
-    </div>
-    <div class="form-group">
-      <label class="form-label">ISBN-nummer</label>
-      <div class="isbn-row">
-        <input type="text" class="form-control" id="isbn-${idx}" placeholder="bijv. 9780131103627">
-        <button type="button" class="isbn-fetch" onclick="fetchISBN(${idx})">↗ Ophalen</button>
-      </div>
-      <div style="font-size:12px;color:var(--text3);margin-top:4px;">Optioneel — we halen automatisch de boekinfo op</div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Titel *</label>
-        <input type="text" class="form-control" id="titel-${idx}" placeholder="Titel van het boek" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Auteur</label>
-        <input type="text" class="form-control" id="auteur-${idx}" placeholder="Auteur(s)">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Richting *</label>
-        <select class="form-control" id="richting-${idx}" required>
-          <option value="">Selecteer richting</option>
-          <option>Rechten</option><option>Economie</option><option>Geneeskunde</option>
-          <option>Ingenieurswetenschappen</option><option>Psychologie</option><option>Informatica</option><option>Andere</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Staat *</label>
-        <select class="form-control" id="staat-${idx}" required>
-          <option value="">Selecteer staat</option>
-          <option>Nieuw</option><option>Goed</option><option>Matig</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Vraagprijs (€) *</label>
-        <input type="number" class="form-control" id="prijs-${idx}" placeholder="bijv. 15" min="1" max="200" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Beschrijving</label>
-        <input type="text" class="form-control" id="desc-${idx}" placeholder="Notities, editie, enz.">
-      </div>
-    </div>
-  </div>`;
-}
-
-function voegBoekToe() {
-  boekIndex++;
-  const container = document.getElementById('boekenLijst');
-  const div = document.createElement('div');
-  div.innerHTML = boekTemplate(boekIndex);
-  container.appendChild(div.firstElementChild);
-  updateBoekTeller();
-}
-
-function verwijderBoek(idx) {
-  const el = document.getElementById('boek-' + idx);
-  if (el) { el.remove(); updateBoekTeller(); hernummerBoeken(); }
-}
-
-function hernummerBoeken() {
-  document.querySelectorAll('.boek-blok').forEach((blok, i) => {
-    const nr = blok.querySelector('.boek-nr');
-    if (nr) nr.textContent = i + 1;
-  });
-}
-
-function updateBoekTeller() {
-  const aantal = document.querySelectorAll('.boek-blok').length;
-  document.getElementById('boekTeller').textContent = '(' + aantal + ')';
-}
-
-function initBoekForm() {
-  boekIndex = 0;
-  document.getElementById('boekenLijst').innerHTML = '';
-  const div = document.createElement('div');
-  div.innerHTML = boekTemplate(0);
-  document.getElementById('boekenLijst').appendChild(div.firstElementChild);
-  updateBoekTeller();
-}
-
-// ─── ISBN OPHALEN ───
-async function fetchISBN(idx) {
-  const input = document.getElementById('isbn-' + idx);
-  const isbn = input.value.replace(/[^0-9X]/g,'');
+async function fetchISBN() {
+  const isbn = document.getElementById('isbnInput').value.replace(/[^0-9X]/g,'');
   if (!isbn) { showNotif('Voer eerst een ISBN in', 'error'); return; }
 
-  const btn = input.parentElement.querySelector('.isbn-fetch');
-  btn.textContent = 'Laden…'; btn.disabled = true;
+  const btn = document.querySelector('.isbn-fetch');
+  btn.textContent = 'Laden…';
+  btn.disabled = true;
 
   try {
     const res = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
@@ -1143,72 +1268,56 @@ async function fetchISBN(idx) {
     const key = `ISBN:${isbn}`;
     if (data[key]) {
       const b = data[key];
-      document.getElementById('titel-' + idx).value = b.title || '';
-      document.getElementById('auteur-' + idx).value = b.authors ? b.authors.map(a => a.name).join(', ') : '';
+      document.getElementById('boekTitel').value = b.title || '';
+      document.getElementById('boekAuteur').value = b.authors ? b.authors.map(a => a.name).join(', ') : '';
       showNotif('Boekinfo opgehaald!', 'success');
     } else {
       showNotif('ISBN niet gevonden — vul handmatig in', 'error');
     }
-  } catch(e) { showNotif('Ophalen mislukt — vul handmatig in', 'error'); }
+  } catch(e) {
+    showNotif('Ophalen mislukt — vul handmatig in', 'error');
+  }
 
-  btn.textContent = '↗ Ophalen'; btn.disabled = false;
+  btn.textContent = '↗ Ophalen';
+  btn.disabled = false;
 }
 
 // ─── FORMSPREE SUBMIT ───
 async function submitForm(e) {
   e.preventDefault();
-
-  const naam = document.getElementById('verkNaam').value;
-  const email = document.getElementById('verkEmail').value;
-  const tel = document.getElementById('verkTel').value;
-
-  const boeken = [];
-  document.querySelectorAll('.boek-blok').forEach(blok => {
-    const id = blok.id.replace('boek-', '');
-    const titel = document.getElementById('titel-' + id).value;
-    if (!titel) return;
-    boeken.push({
-      titel,
-      auteur: document.getElementById('auteur-' + id).value,
-      richting: document.getElementById('richting-' + id).value,
-      staat: document.getElementById('staat-' + id).value,
-      prijs: document.getElementById('prijs-' + id).value,
-      desc: document.getElementById('desc-' + id).value
-    });
-  });
-
-  if (boeken.length === 0) { showNotif('Voeg minstens één boek toe', 'error'); return; }
-
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Versturen…';
 
-  const boekenTekst = boeken.map((b, i) =>
-    `Boek ${i+1}: ${b.titel} | ${b.auteur} | ${b.richting} | ${b.staat} | €${b.prijs}${b.desc ? ' | ' + b.desc : ''}`
-  ).join('\n');
+  const form = document.getElementById('verkoopForm');
+  const formData = new FormData(form);
 
   const isDemo = FORMSPREE_URL.includes('JOUW_FORM_ID');
   if (isDemo) {
     await new Promise(r => setTimeout(r, 1200));
-    showSuccess(); btn.disabled = false; btn.textContent = 'Aanmelding versturen →'; return;
+    showSuccess();
+    btn.disabled = false;
+    btn.textContent = 'Aanmelding versturen →';
+    return;
   }
 
   try {
     const res = await fetch(FORMSPREE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        naam, email, telefoon: tel,
-        aantal_boeken: boeken.length,
-        boeken: boekenTekst,
-        _subject: `BoekenHub — ${boeken.length} boek(en) aangeboden door ${naam}`
-      })
+      body: formData,
+      headers: { 'Accept': 'application/json' }
     });
-    if (res.ok) { showSuccess(); }
-    else { showNotif('Er ging iets mis. Probeer opnieuw.', 'error'); }
-  } catch(e) { showNotif('Geen verbinding. Probeer opnieuw.', 'error'); }
+    if (res.ok) {
+      showSuccess();
+    } else {
+      showNotif('Er ging iets mis. Probeer opnieuw.', 'error');
+    }
+  } catch(e) {
+    showNotif('Geen verbinding. Probeer opnieuw.', 'error');
+  }
 
-  btn.disabled = false; btn.textContent = 'Aanmelding versturen →';
+  btn.disabled = false;
+  btn.textContent = 'Aanmelding versturen →';
 }
 
 function showSuccess() {
@@ -1218,10 +1327,7 @@ function showSuccess() {
 }
 
 function resetForm() {
-  document.getElementById('verkNaam').value = '';
-  document.getElementById('verkEmail').value = '';
-  document.getElementById('verkTel').value = '';
-  initBoekForm();
+  document.getElementById('verkoopForm').reset();
   document.getElementById('formContainer').style.display = 'block';
   document.getElementById('successScreen').classList.remove('visible');
 }
