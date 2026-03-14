@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoekenHub Leuven — Tweedehands studieboeken</title>
+<meta name="description" content="Koop of verkoop tweedehands studieboeken in Leuven. Betaalbaar, lokaal en eenvoudig.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0e0f;
+    --bg2: #161618;
+    --bg3: #1e1e21;
+    --bg4: #252529;
+    --accent: #c8f135;
+    --accent2: #a8d420;
+    --text: #f0ede8;
+    --text2: #9e9b95;
+    --text3: #5e5c58;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2rem;
+    border-bottom: 0.5px solid var(--border);
+    background: rgba(14,14,15,0.95);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+  .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-links a { color: var(--text2); text-decoration: none; font-size: 14px; transition: color 0.2s; cursor: pointer; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+  .btn-primary {
+    background: var(--accent); color: #0e0e0f;
+    border: none; padding: 0.55rem 1.2rem;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; font-size: 14px; cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: scale(1.02); }
+
+  .btn-outline {
+    background: transparent; color: var(--text);
+    border: 0.5px solid var(--border2); padding: 0.55rem 1.2rem;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-weight: 400; font-size: 14px; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── PAGES ─── */
+  .page { display: none; animation: fadeIn 0.25s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 5rem 2rem 3.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(200,241,53,0.08); color: var(--accent);
+    border: 0.5px solid rgba(200,241,53,0.2);
+    padding: 0.3rem 0.85rem; border-radius: 100px;
+    font-size: 13px; margin-bottom: 1.75rem;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1.5px; margin-bottom: 1.25rem;
+  }
+  .hero h1 span { color: var(--accent); }
+
+  .hero p {
+    color: var(--text2); font-size: 1.05rem;
+    max-width: 500px; margin: 0 auto 2.5rem; font-weight: 300;
+  }
+
+  .hero-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .hero-actions .btn-primary,
+  .hero-actions .btn-outline { padding: 0.75rem 1.75rem; font-size: 15px; }
+
+  /* ─── STATS ─── */
+  .stats-bar {
+    display: flex; justify-content: center; gap: 3rem;
+    padding: 2.5rem 2rem;
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    max-width: 700px; margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--accent); letter-spacing: -1px; }
+  .stat-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  /* ─── SEARCH ─── */
+  .search-section { padding: 3rem 2rem; max-width: 960px; margin: 0 auto; }
+
+  .search-bar { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  .search-input {
+    flex: 1; min-width: 200px;
+    background: var(--bg3); border: 0.5px solid var(--border2);
+    border-radius: var(--radius); padding: 0.8rem 1.1rem;
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 15px; outline: none; transition: border-color 0.2s;
+    appearance: none;
+  }
+  .search-input::placeholder { color: var(--text3); }
+  .search-input:focus { border-color: var(--accent); }
+
+  .filter-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
+
+  .filter-chip {
+    padding: 0.35rem 0.9rem; border-radius: 100px;
+    border: 0.5px solid var(--border2); background: transparent;
+    color: var(--text2); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+  }
+  .filter-chip:hover, .filter-chip.active {
+    border-color: var(--accent); color: var(--accent);
+    background: rgba(200,241,53,0.07);
+  }
+
+  .section-title { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .section-title h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.3px; }
+  .section-title span { font-size: 13px; color: var(--text3); }
+
+  /* ─── BOOK GRID ─── */
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 1rem;
+  }
+
+  .book-card {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s; cursor: pointer;
+  }
+  .book-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+
+  .book-cover {
+    width: 100%; height: 130px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .book-cover-inner {
+    width: 62px; height: 88px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; box-shadow: 4px 6px 20px rgba(0,0,0,0.5);
+  }
+
+  .book-info { padding: 0.9rem; }
+  .book-title { font-weight: 500; font-size: 14px; margin-bottom: 3px; line-height: 1.3; }
+  .book-meta { font-size: 12px; color: var(--text3); margin-bottom: 0.6rem; }
+
+  .book-footer { display: flex; align-items: center; justify-content: space-between; }
+  .book-price { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+
+  .book-staat { font-size: 11px; padding: 2px 8px; border-radius: 100px; background: var(--bg4); color: var(--text2); }
+  .book-staat.nieuw { background: rgba(200,241,53,0.12); color: var(--accent); }
+  .book-staat.goed { background: rgba(55,138,221,0.12); color: #378add; }
+  .book-staat.matig { background: rgba(239,159,39,0.12); color: #ef9f27; }
+
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text3); }
+  .empty-state p { font-size: 14px; margin-top: 0.5rem; }
+
+  /* ─── HOE WERKT HET ─── */
+  .how-section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; }
+  .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+
+  .how-card {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; position: relative; overflow: hidden;
+  }
+  .how-num {
+    font-family: 'Syne', sans-serif; font-size: 3.5rem; font-weight: 800;
+    color: var(--bg4); position: absolute; top: 0.3rem; right: 0.75rem; line-height: 1;
+  }
+  .how-icon { font-size: 22px; margin-bottom: 0.85rem; }
+  .how-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 0.4rem; }
+  .how-text { font-size: 13px; color: var(--text2); line-height: 1.55; font-weight: 300; }
+
+  /* ─── FORM ─── */
+  .form-section { max-width: 620px; margin: 0 auto; padding: 3rem 2rem; }
+  .form-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
+  .form-subtitle { color: var(--text2); font-size: 14px; margin-bottom: 2.5rem; font-weight: 300; }
+
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 0.4rem; letter-spacing: 0.2px; }
+
+  .form-control {
+    width: 100%; background: var(--bg3);
+    border: 0.5px solid var(--border2); border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 15px;
+    outline: none; transition: border-color 0.2s; appearance: none;
+  }
+  .form-control:focus { border-color: var(--accent); }
+  .form-control::placeholder { color: var(--text3); }
+  textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .isbn-row { display: flex; gap: 0.6rem; }
+  .isbn-row .form-control { flex: 1; }
+
+  .isbn-fetch {
+    background: var(--bg4); border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 0.75rem 1rem;
+    color: var(--text2); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .isbn-fetch:hover { border-color: var(--accent); color: var(--accent); }
+
+  .upload-zone {
+    border: 1px dashed var(--border2); border-radius: var(--radius);
+    padding: 2rem; text-align: center; color: var(--text3);
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+  }
+  .upload-zone:hover { border-color: var(--accent); background: rgba(200,241,53,0.03); color: var(--text2); }
+  .upload-icon { font-size: 24px; margin-bottom: 0.5rem; }
+
+  .form-submit {
+    width: 100%; background: var(--accent); color: #0e0e0f;
+    border: none; padding: 0.9rem; border-radius: var(--radius);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+    margin-top: 0.5rem; letter-spacing: 0.2px;
+  }
+  .form-submit:hover { background: var(--accent2); transform: scale(1.01); }
+  .form-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .form-note { font-size: 12px; color: var(--text3); text-align: center; margin-top: 0.85rem; line-height: 1.5; }
+
+  /* ─── SUCCESS ─── */
+  .success-screen { display: none; text-align: center; padding: 4rem 2rem; }
+  .success-screen.visible { display: block; }
+  .success-icon {
+    width: 64px; height: 64px; background: rgba(200,241,53,0.12);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem; font-size: 28px;
+  }
+
+  /* ─── ADMIN ─── */
+  .admin-section { max-width: 960px; margin: 0 auto; padding: 3rem 2rem; }
+
+  .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+  .admin-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.3px; }
+
+  .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+  @media (max-width: 600px) { .admin-stats { grid-template-columns: repeat(2, 1fr); } }
+
+  .admin-stat {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 1rem;
+  }
+  .admin-stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .admin-stat-num { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; }
+
+  .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0; }
+  .admin-tab {
+    padding: 0.6rem 1rem; font-size: 14px; cursor: pointer; color: var(--text2);
+    border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.2s;
+    background: none; border-left: none; border-right: none; border-top: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .admin-tab:hover { color: var(--text); }
+  .admin-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .admin-table-wrap { overflow-x: auto; }
+  .admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  .admin-table th {
+    font-size: 11px; color: var(--text3); text-transform: uppercase;
+    letter-spacing: 0.6px; padding: 0.6rem 1rem; text-align: left;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .admin-table td {
+    padding: 0.9rem 1rem; font-size: 14px;
+    border-bottom: 0.5px solid var(--border); vertical-align: middle;
+  }
+  .admin-table tr:hover td { background: var(--bg2); }
+
+  .status-badge { font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 500; white-space: nowrap; }
+  .status-wacht { background: rgba(239,159,39,0.12); color: #ef9f27; }
+  .status-online { background: rgba(200,241,53,0.12); color: var(--accent); }
+  .status-verkocht { background: var(--bg4); color: var(--text3); }
+
+  .action-btn {
+    background: transparent; border: 0.5px solid var(--border2);
+    border-radius: 6px; padding: 4px 10px; color: var(--text2);
+    font-size: 12px; cursor: pointer; transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif; margin-right: 4px;
+  }
+  .action-btn:hover { border-color: var(--border2); color: var(--text); }
+  .action-btn.approve { border-color: rgba(200,241,53,0.3); color: var(--accent); background: rgba(200,241,53,0.07); }
+  .action-btn.approve:hover { background: rgba(200,241,53,0.15); }
+  .action-btn.danger { border-color: rgba(226,75,74,0.3); color: #e24b4a; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); z-index: 200;
+    align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2); border: 0.5px solid var(--border2);
+    border-radius: var(--radius); padding: 2rem; max-width: 420px; width: 100%;
+  }
+  .modal h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.4rem; }
+  .modal p { font-size: 14px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.5; font-weight: 300; }
+  .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+
+  .contact-card {
+    background: var(--bg3); border-radius: var(--radius-sm);
+    padding: 1rem; margin-bottom: 1.25rem;
+  }
+  .contact-card .label { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
+  .contact-card .line { font-size: 14px; margin-bottom: 4px; }
+
+  /* ─── SETUP BANNER ─── */
+  .setup-banner {
+    background: rgba(200,241,53,0.06); border: 0.5px solid rgba(200,241,53,0.2);
+    border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 2rem;
+    font-size: 13px; color: var(--text2); line-height: 1.6;
+  }
+  .setup-banner strong { color: var(--accent); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 0.5px solid var(--border); padding: 2rem;
+    text-align: center; font-size: 13px; color: var(--text3); margin-top: 2rem;
+  }
+  footer span { color: var(--accent); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 600px) {
+    nav { padding: 0.85rem 1rem; }
+    .nav-links a { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .stats-bar { gap: 1.5rem; }
+  }
+
+  /* ─── LOADING SPINNER ─── */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(200,241,53,0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block; vertical-align: middle; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── NOTIFICATION ─── */
+  .notif {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+    background: var(--bg3); border: 0.5px solid var(--border2);
+    border-radius: var(--radius); padding: 0.85rem 1.25rem;
+    font-size: 14px; display: none; animation: slideUp 0.3s ease;
+    max-width: 320px; box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  .notif.show { display: block; }
+  .notif.success { border-color: rgba(200,241,53,0.3); }
+  .notif.error { border-color: rgba(226,75,74,0.3); }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     CONFIGURATIE — HIER MOET JE AANPASSEN
+     ═══════════════════════════════════════ -->
+<script>
+  // ┌─────────────────────────────────────────────────────────────┐
+  // │  STAP 1: Vervang dit door jouw Formspree endpoint           │
+  // │  Ga naar https://formspree.io → maak een form aan           │
+  // │  en plak de endpoint hier (bijv. https://formspree.io/f/xxx)│
+  // └─────────────────────────────────────────────────────────────┘
+  const FORMSPREE_URL = "https://formspree.io/f/mvzwqngz";
+
+  // ┌─────────────────────────────────────────────────────────────┐
+  // │  STAP 2: Google Sheets als database                         │
+  // │  1. Maak een Google Sheet aan                               │
+  // │  2. Voeg kolommen toe: titel | auteur | richting | staat    │
+  // │     prijs | beschrijving | emoji | kleur                    │
+  // │  3. Publiceer het blad: Bestand → Delen → Publiceer         │
+  // │     als webpagina → CSV                                     │
+  // │  4. Vervang de URL hieronder                                │
+  // └─────────────────────────────────────────────────────────────┘
+  const SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNvKpsFm6H-doEqHJ2Od0I3J-aBLE02WDnvncKDxAHGe6llZtbmvKL1JpdFOAofJFsojwCWqBVP4U0/pub?gid=0&single=true&output=csv";
+
+  // ┌─────────────────────────────────────────────────────────────┐
+  // │  STAP 3: Jouw contactgegevens                               │
+  // └─────────────────────────────────────────────────────────────┘
+  const CONTACT_TELEFOON = "+32 485 69 24 94";
+  const CONTACT_EMAIL = "jorisvaho@gmail.com";
+  const CONTACT_ADRES = "Parijsstraat 35 (0302), 3000 Leuven";
+
+  // ┌─────────────────────────────────────────────────────────────┐
+  // │  STAP 4: Adminwachtwoord (verander dit!)                    │
+  // └─────────────────────────────────────────────────────────────┘
+  const ADMIN_WACHTWOORD = "Jovaho.123";
+</script>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" onclick="showPage('home')">
+    <span class="logo-dot"></span>
+    BoekenHub<span style="color:var(--accent)">.</span>
+  </a>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home">Aanbod</a>
+    <a onclick="showPage('hoe')" id="nav-hoe">Hoe werkt het</a>
+    <button class="btn-outline" onclick="showPage('verkoop')">Boek verkopen</button>
+    <button class="btn-primary" onclick="openAdmin()">Beheer</button>
+  </div>
+</nav>
+
+<!-- ═══════════ HOME PAGE ═══════════ -->
+<div class="page active" id="page-home">
+
+  <div class="hero">
+    <div class="hero-badge">
+      <span class="logo-dot"></span>
+      Tweedehands studieboeken · Leuven
+    </div>
+    <h1>Jouw <span>studieboeken</span>,<br>zonder gedoe.</h1>
+    <p>Koop of verkoop tweedehands studieboeken in Leuven. Betaalbaar, lokaal en eenvoudig.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('search-section').scrollIntoView({behavior:'smooth'})">Bekijk aanbod</button>
+      <button class="btn-outline" onclick="showPage('verkoop')">Boek verkopen</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" id="statAantal">—</div>
+      <div class="stat-label">Boeken beschikbaar</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="statGemiddeld">—</div>
+      <div class="stat-label">Gemiddelde prijs</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Leuven</div>
+      <div class="stat-label">Studentenstad</div>
+    </div>
+  </div>
+
+  <div class="search-section" id="search-section">
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="Zoek op titel, auteur of ISBN…" id="searchInput" oninput="filterBooks()">
+      <select class="search-input" style="flex:0 0 auto;width:auto;cursor:pointer;" id="richtingFilter" onchange="filterBooks()">
+        <option value="">Alle richtingen</option>
+        <option>Rechten</option>
+        <option>Economie</option>
+        <option>Geneeskunde</option>
+        <option>Ingenieurswetenschappen</option>
+        <option>Psychologie</option>
+        <option>Informatica</option>
+        <option>Andere</option>
+      </select>
+    </div>
+
+    <div class="filter-row">
+      <button class="filter-chip active" onclick="setFilter(this,'alle')">Alle</button>
+      <button class="filter-chip" onclick="setFilter(this,'Nieuw')">Nieuw</button>
+      <button class="filter-chip" onclick="setFilter(this,'Goed')">Goed</button>
+      <button class="filter-chip" onclick="setFilter(this,'Matig')">Matig</button>
+    </div>
+
+    <div class="section-title">
+      <h2>Beschikbare boeken</h2>
+      <span id="bookCount">laden…</span>
+    </div>
+
+    <div class="books-grid" id="booksGrid">
+      <!-- boeken worden hier dynamisch geladen uit Google Sheets -->
+    </div>
+  </div>
+
+  <!-- HOE WERKT HET (inline op home) -->
+  <div class="how-section">
+    <div class="section-title"><h2>Hoe werkt het?</h2></div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-icon">📚</div>
+        <div class="how-title">Jij biedt aan</div>
+        <div class="how-text">Vul het formulier in met foto, ISBN en prijs. Breng je boek langs op onze locatie.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-icon">✅</div>
+        <div class="how-title">Wij controleren</div>
+        <div class="how-text">We checken de staat en zetten het boek online met een kleine servicemarge.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-icon">🔍</div>
+        <div class="how-title">Koper vindt het</div>
+        <div class="how-text">Zoek op titel, richting of staat. Eerlijke prijzen voor iedereen.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">04</div>
+        <div class="how-icon">🤝</div>
+        <div class="how-title">Ophalen of bezorging</div>
+        <div class="how-text">Haal op bij ons of laat bezorgen. Betaling ter plaatse of via overschrijving.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ HOE WERKT HET ═══════════ -->
+<div class="page" id="page-hoe">
+  <div class="how-section" style="max-width:700px;">
+    <div style="margin-bottom:2.5rem;">
+      <div class="form-title">Hoe werkt BoekenHub?</div>
+      <div class="form-subtitle">Alles wat je moet weten over ons platform in Leuven.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="how-card" style="display:flex;gap:1.25rem;align-items:flex-start;">
+        <div style="font-size:28px;flex-shrink:0;">📦</div>
+        <div>
+          <div class="how-title" style="margin-bottom:0.4rem;">Voor verkopers</div>
+          <div class="how-text">Breng je boek(en) langs op onze locatie in Leuven. Vul het online formulier vooraf in met foto, ISBN, staat en jouw gewenste prijs. Wij voegen een kleine servicemarge toe en zetten het boek live. Zodra het verkocht is, ontvang jij jouw deel.</div>
+        </div>
+      </div>
+      <div class="how-card" style="display:flex;gap:1.25rem;align-items:flex-start;">
+        <div style="font-size:28px;flex-shrink:0;">🛒</div>
+        <div>
+          <div class="how-title" style="margin-bottom:0.4rem;">Voor kopers</div>
+          <div class="how-text">Blader door ons aanbod, filter op richting of staat. Neem contact op en haal op bij ons of laat bezorgen. Geen account nodig, geen ingewikkeld betalingssysteem.</div>
+        </div>
+      </div>
+      <div class="how-card" style="display:flex;gap:1.25rem;align-items:flex-start;">
+        <div style="font-size:28px;flex-shrink:0;">💰</div>
+        <div>
+          <div class="how-title" style="margin-bottom:0.4rem;">Prijzen & marge</div>
+          <div class="how-text">De verkoper bepaalt zelf zijn prijs. Wij voegen een kleine servicemarge toe. Zo blijven de prijzen eerlijk en is de service gratis voor kopers.</div>
+        </div>
+      </div>
+      <div class="how-card" style="display:flex;gap:1.25rem;align-items:flex-start;">
+        <div style="font-size:28px;flex-shrink:0;">📍</div>
+        <div>
+          <div class="how-title" style="margin-bottom:0.4rem;">Locatie</div>
+          <div class="how-text" id="adresText">Ophalen kan op onze locatie in Leuven. Neem vooraf contact op om een moment af te spreken.</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:2rem;text-align:center;">
+      <button class="btn-primary" style="padding:0.75rem 2rem;font-size:15px;" onclick="showPage('verkoop')">Boek aanbieden →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ VERKOOP PAGE ═══════════ -->
+<div class="page" id="page-verkoop">
+  <div class="form-section" id="formContainer" style="max-width:680px;">
+    <div class="form-title">Boeken aanbieden</div>
+    <div class="form-subtitle">Vul je gegevens één keer in en voeg al je boeken toe.</div>
+
+    <form id="verkoopForm" onsubmit="submitForm(event)">
+
+      <!-- CONTACTGEGEVENS — eenmalig -->
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:2rem;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:1rem;">Jouw gegevens</div>
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Naam *</label>
+            <input type="text" class="form-control" id="verkNaam" placeholder="Voornaam en achternaam" required>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">E-mail *</label>
+            <input type="email" class="form-control" id="verkEmail" placeholder="jouw@email.com" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:0.75rem;margin-bottom:0;">
+          <label class="form-label">Telefoonnummer (optioneel)</label>
+          <input type="tel" class="form-control" id="verkTel" placeholder="+32 (0)4xx xx xx xx">
+        </div>
+      </div>
+
+      <!-- BOEKEN -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">
+          Boeken <span id="boekTeller" style="color:var(--text3);font-weight:400;font-size:13px;">(1)</span>
+        </div>
+      </div>
+
+      <div id="boekenLijst"></div>
+
+      <button type="button" onclick="voegBoekToe()"
+        style="width:100%;background:transparent;border:1px dashed var(--border2);border-radius:var(--radius);padding:0.85rem;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s;margin-bottom:1.5rem;"
+        onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+        onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+        + Nog een boek toevoegen
+      </button>
+
+      <button type="submit" class="form-submit" id="submitBtn">Aanmelding versturen →</button>
+      <div class="form-note">Na het insturen nemen we contact met je op. Breng de boeken daarna langs op onze locatie in Leuven.</div>
+
+    </form>
+  </div>
+
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <div class="form-title" style="margin-bottom:0.5rem;">Aanmelding ontvangen!</div>
+    <p style="color:var(--text2);font-size:15px;max-width:420px;margin:0 auto 1rem;font-weight:300;">We nemen snel contact met je op via e-mail. Breng je boek(en) daarna langs op onze locatie.</p>
+    <div class="contact-card" style="max-width:320px;margin:0 auto 2rem;">
+      <div class="label">Onze contactgegevens</div>
+      <div class="line" id="succesEmail"></div>
+      <div class="line" id="succesTel"></div>
+    </div>
+    <button class="btn-primary" style="padding:0.75rem 1.75rem;" onclick="resetForm()">Nog boeken aanbieden</button>
+  </div>
+</div>
+
+<!-- ═══════════ ADMIN PAGE ═══════════ -->
+<div class="page" id="page-admin">
+
+  <!-- Login overlay -->
+  <div id="adminLogin" style="max-width:380px;margin:4rem auto;padding:2rem;">
+    <div class="form-title" style="font-size:1.4rem;margin-bottom:0.3rem;">Beheerpaneel</div>
+    <div class="form-subtitle">Voer je wachtwoord in om verder te gaan.</div>
+    <div class="form-group">
+      <label class="form-label">Wachtwoord</label>
+      <input type="password" class="form-control" id="adminPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAdmin()">
+    </div>
+    <button class="form-submit" onclick="checkAdmin()">Inloggen</button>
+    <div id="loginError" style="color:#e24b4a;font-size:13px;text-align:center;margin-top:0.75rem;display:none;">Verkeerd wachtwoord.</div>
+  </div>
+
+  <!-- Admin paneel (verborgen tot login) -->
+  <div id="adminPanel" style="display:none;">
+    <div class="admin-section">
+
+      <div class="setup-banner">
+        <strong>📋 Setupgids</strong> — Vervang in de config bovenaan het bestand:
+        <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:4px;">FORMSPREE_URL</code> met jouw Formspree endpoint,
+        <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:4px;">SHEETS_CSV_URL</code> met jouw Google Sheets CSV-link,
+        en de contactgegevens. Verwijder daarna deze banner.
+      </div>
+
+      <div class="admin-header">
+        <div class="admin-title">Beheerpaneel</div>
+        <div style="display:flex;gap:0.6rem;align-items:center;">
+          <span style="font-size:13px;color:var(--text3)" id="adminSheetsStatus">Google Sheets niet geconfigureerd</span>
+          <button class="btn-outline" style="font-size:13px;padding:0.4rem 0.9rem;" onclick="loadBooksFromSheets()">↻ Verversen</button>
+          <button class="action-btn danger" onclick="adminLogout()">Uitloggen</button>
+        </div>
+      </div>
+
+      <div class="admin-stats">
+        <div class="admin-stat">
+          <div class="admin-stat-label">Beschikbaar</div>
+          <div class="admin-stat-num" style="color:var(--accent);" id="adminStatOnline">0</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-label">In afwachting</div>
+          <div class="admin-stat-num" style="color:#ef9f27;" id="adminStatWacht">0</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-label">Verkocht</div>
+          <div class="admin-stat-num" id="adminStatVerkocht">0</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-label">Totaal ingediend</div>
+          <div class="admin-stat-num" id="adminStatTotaal">0</div>
+        </div>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="adminTab(this,'alle')">Alle boeken</button>
+        <button class="admin-tab" onclick="adminTab(this,'wacht')">In afwachting</button>
+        <button class="admin-tab" onclick="adminTab(this,'online')">Online</button>
+        <button class="admin-tab" onclick="adminTab(this,'verkocht')">Verkocht</button>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <div class="section-title"><h2>Boeken beheren</h2></div>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:1.5rem;">
+          Nieuwe aanmeldingen komen binnen via e-mail (Formspree). Voeg ze handmatig toe aan je Google Sheet.
+          Boeken met status "online" verschijnen automatisch op de website.
+        </p>
+
+        <!-- Handmatig boek toevoegen -->
+        <details style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.5rem;">
+          <summary style="cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;list-style:none;display:flex;align-items:center;justify-content:space-between;">
+            + Boek handmatig toevoegen aan lijst
+            <span style="font-size:12px;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400;">Voeg toe aan Google Sheet</span>
+          </summary>
+          <div style="margin-top:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <div>
+              <label class="form-label">Titel</label>
+              <input type="text" class="form-control" id="adminTitel" placeholder="Titel">
+            </div>
+            <div>
+              <label class="form-label">Auteur</label>
+              <input type="text" class="form-control" id="adminAuteur" placeholder="Auteur">
+            </div>
+            <div>
+              <label class="form-label">Richting</label>
+              <select class="form-control" id="adminRichting">
+                <option>Rechten</option><option>Economie</option><option>Geneeskunde</option>
+                <option>Ingenieurswetenschappen</option><option>Psychologie</option><option>Informatica</option><option>Andere</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Staat</label>
+              <select class="form-control" id="adminStaat">
+                <option>Nieuw</option><option>Goed</option><option>Matig</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Verkoopprijs (€)</label>
+              <input type="number" class="form-control" id="adminPrijs" placeholder="20">
+            </div>
+            <div>
+              <label class="form-label">Emoji (cover)</label>
+              <input type="text" class="form-control" id="adminEmoji" placeholder="📚" maxlength="2">
+            </div>
+          </div>
+          <button class="btn-primary" style="margin-top:1rem;" onclick="generateSheetRow()">Genereer Sheet-rij →</button>
+          <div id="sheetRowOutput" style="display:none;margin-top:1rem;background:var(--bg3);border-radius:var(--radius-sm);padding:1rem;font-family:monospace;font-size:12px;color:var(--text2);word-break:break-all;"></div>
+        </details>
+
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Boek</th>
+              <th>Richting</th>
+              <th>Prijs</th>
+              <th>Staat</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:2rem;">Boeken laden uit Google Sheets…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:2rem;padding:1.25rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:0.75rem;">📊 Google Sheets structuur</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:0.75rem;">Jouw Google Sheet moet deze kolommen hebben (in deze volgorde):</p>
+        <div style="overflow-x:auto;">
+          <table style="font-size:12px;border-collapse:collapse;width:100%;min-width:500px;">
+            <tr style="background:var(--bg3);">
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">A: titel</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">B: auteur</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">C: richting</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">D: staat</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">E: prijs</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">F: emoji</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">G: kleur</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">H: status</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Beginselen v. privaatrecht</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Dirix</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Rechten</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Goed</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">22</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">⚖️</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">#1a2a1a</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">online</td>
+            </tr>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:0.6rem;">Status moet "online", "wacht" of "verkocht" zijn. Alleen "online" boeken worden getoond op de website.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CONTACT MODAL ═══════════ -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal">
+    <h3 id="modalTitle">Interesse in dit boek?</h3>
+    <p id="modalDesc">Neem contact op om dit boek op te halen of te laten bezorgen in Leuven.</p>
+    <div class="contact-card">
+      <div class="label">Onze contactgegevens</div>
+      <div class="line" id="modalEmail"></div>
+      <div class="line" id="modalTel"></div>
+      <div class="line" id="modalAdres" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal()">Sluiten</button>
+      <button class="btn-primary" onclick="closeModal()">Begrepen!</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<!-- FOOTER -->
+<footer>
+  Gemaakt voor studenten in <span>Leuven</span> · BoekenHub &copy; 2025
+</footer>
+
+<script>
+// ─── STATE ───
+let allBooks = [];
+let activeFilter = 'alle';
+let adminLoggedIn = false;
+let adminTabFilter = 'alle';
+
+// Standaard boeken als Google Sheets nog niet geconfigureerd is
+const demoBooks = [
+  { titel: "Beginselen van Belgisch privaatrecht", auteur: "Dirix & Sagaert", richting: "Rechten", staat: "Goed", prijs: 22, emoji: "⚖️", kleur: "#1a2a1a", status: "online" },
+  { titel: "Microeconomie", auteur: "Pindyck & Rubinfeld", richting: "Economie", staat: "Nieuw", prijs: 18, emoji: "📈", kleur: "#1a1a2a", status: "online" },
+  { titel: "Anatomie van de mens", auteur: "Gray's Anatomy NL", richting: "Geneeskunde", staat: "Goed", prijs: 35, emoji: "🫀", kleur: "#2a1a1a", status: "online" },
+  { titel: "Thermodynamica", auteur: "Çengel & Boles", richting: "Ingenieurswetenschappen", staat: "Matig", prijs: 28, emoji: "⚙️", kleur: "#1a2020", status: "online" },
+  { titel: "Ontwikkelingspsychologie", auteur: "Santrock", richting: "Psychologie", staat: "Goed", prijs: 16, emoji: "🧠", kleur: "#201a2a", status: "online" },
+  { titel: "Algoritmen en datastructuren", auteur: "Cormen et al.", richting: "Informatica", staat: "Nieuw", prijs: 20, emoji: "💻", kleur: "#1a1820", status: "online" },
+];
+
+// ─── INIT ───
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('modalEmail').textContent = "✉️ " + CONTACT_EMAIL;
+  document.getElementById('modalTel').textContent = "📱 " + CONTACT_TELEFOON;
+  document.getElementById('modalAdres').textContent = "📍 " + CONTACT_ADRES;
+  document.getElementById('succesEmail').textContent = "✉️ " + CONTACT_EMAIL;
+  document.getElementById('succesTel').textContent = "📱 " + CONTACT_TELEFOON;
+  document.getElementById('adresText').textContent = "Ophalen kan op " + CONTACT_ADRES + ". Neem vooraf contact op.";
+
+  loadBooksFromSheets();
+  initBoekForm();
+});
+
+// ─── GOOGLE SHEETS LADEN ───
+async function loadBooksFromSheets() {
+  const isDemo = SHEETS_CSV_URL.includes('JOUW_SHEET_ID');
+
+  if (isDemo) {
+    allBooks = demoBooks;
+    renderBooks(allBooks.filter(b => b.status === 'online'));
+    updateStats(allBooks.filter(b => b.status === 'online'));
+    return;
+  }
+
+  try {
+    const res = await fetch(SHEETS_CSV_URL + '&t=' + Date.now());
+    if (!res.ok) throw new Error('Sheets niet bereikbaar');
+    const text = await res.text();
+    const rows = parseCSV(text);
+
+    // Sla de eerste rij over als die kolomnamen zijn
+    const dataRows = rows[0] && rows[0][0].toLowerCase() === 'titel' ? rows.slice(1) : rows;
+
+    allBooks = dataRows
+      .filter(r => r.length >= 5 && r[0])
+      .map(r => ({
+        titel: r[0] || '',
+        auteur: r[1] || '',
+        richting: r[2] || '',
+        staat: r[3] || '',
+        prijs: parseFloat(r[4]) || 0,
+        emoji: r[5] || '📚',
+        kleur: r[6] || '#1a1a1a',
+        status: (r[7] || 'online').trim().toLowerCase()
+      }));
+
+    const online = allBooks.filter(b => b.status === 'online');
+    renderBooks(online);
+    updateStats(online);
+
+    if (adminLoggedIn) {
+      renderAdminTable();
+      updateAdminStats();
+      document.getElementById('adminSheetsStatus').textContent = '✓ ' + allBooks.length + ' boeken geladen';
+    }
+
+    showNotif('Aanbod verversen geslaagd', 'success');
+  } catch (e) {
+    console.error(e);
+    allBooks = demoBooks;
+    renderBooks(allBooks.filter(b => b.status === 'online'));
+    updateStats(allBooks.filter(b => b.status === 'online'));
+    showNotif('Sheets niet bereikbaar — demodata getoond', 'error');
+  }
+}
+
+// ─── CSV PARSER ───
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.split('\n');
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    cols.push(cur.trim());
+    rows.push(cols);
+  }
+  return rows;
+}
+
+// ─── BOEKEN RENDEREN ───
+function renderBooks(list) {
+  const grid = document.getElementById('booksGrid');
+  document.getElementById('bookCount').textContent = list.length + ' resultaten';
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><div style="font-size:2rem;">📭</div><p>Geen boeken gevonden voor deze zoekopdracht.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(b => `
+    <div class="book-card" onclick="openModal('${escapeHtml(b.titel)}','${escapeHtml(b.auteur)}','${b.prijs}','${b.staat}')">
+      <div class="book-cover" style="background:${b.kleur}25;">
+        <div class="book-cover-inner" style="background:${b.kleur};">${b.emoji}</div>
+      </div>
+      <div class="book-info">
+        <div class="book-title">${escapeHtml(b.titel)}</div>
+        <div class="book-meta">${escapeHtml(b.auteur)} · ${escapeHtml(b.richting)}</div>
+        <div class="book-footer">
+          <div class="book-price">€${b.prijs}</div>
+          <div class="book-staat ${b.staat.toLowerCase()}">${b.staat}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStats(online) {
+  document.getElementById('statAantal').textContent = online.length;
+  const prijzen = online.map(b => b.prijs).filter(p => p > 0);
+  const gem = prijzen.length ? Math.round(prijzen.reduce((a,b) => a+b,0) / prijzen.length) : 0;
+  document.getElementById('statGemiddeld').textContent = gem > 0 ? '€' + gem : '—';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── FILTER ───
+function filterBooks() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const richting = document.getElementById('richtingFilter').value;
+  const list = allBooks.filter(b => {
+    if (b.status !== 'online') return false;
+    const matchQ = !q || b.titel.toLowerCase().includes(q) || b.auteur.toLowerCase().includes(q);
+    const matchR = !richting || b.richting === richting;
+    const matchF = activeFilter === 'alle' || b.staat === activeFilter;
+    return matchQ && matchR && matchF;
+  });
+  renderBooks(list);
+}
+
+function setFilter(el, val) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = val;
+  filterBooks();
+}
+
+// ─── PAGES ───
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'verkoop') initBoekForm();
+}
+
+// ─── MODAL ───
+function openModal(titel, auteur, prijs, staat) {
+  document.getElementById('modalTitle').textContent = titel;
+  document.getElementById('modalDesc').textContent = `${auteur} · ${staat} · €${prijs} — Neem contact op om dit boek op te halen of te laten bezorgen.`;
+  document.getElementById('contactModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('contactModal').classList.remove('open');
+}
+
+// ─── ISBN OPHALEN ───
+// ─── MULTI-BOEK FORMULIER ───
+let boekIndex = 0;
+
+function boekTemplate(idx) {
+  return `<div class="boek-blok" id="boek-${idx}" style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text2);">Boek <span class="boek-nr">${idx+1}</span></div>
+      ${idx > 0 ? `<button type="button" onclick="verwijderBoek(${idx})" style="background:transparent;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color 0.2s;" onmouseover="this.style.color='#e24b4a'" onmouseout="this.style.color='var(--text3)'">✕ Verwijderen</button>` : ''}
+    </div>
+    <div class="form-group">
+      <label class="form-label">ISBN-nummer</label>
+      <div class="isbn-row">
+        <input type="text" class="form-control" id="isbn-${idx}" placeholder="bijv. 9780131103627">
+        <button type="button" class="isbn-fetch" onclick="fetchISBN(${idx})">↗ Ophalen</button>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px;">Optioneel — we halen automatisch de boekinfo op</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Titel *</label>
+        <input type="text" class="form-control" id="titel-${idx}" placeholder="Titel van het boek" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Auteur</label>
+        <input type="text" class="form-control" id="auteur-${idx}" placeholder="Auteur(s)">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Richting *</label>
+        <select class="form-control" id="richting-${idx}" required>
+          <option value="">Selecteer richting</option>
+          <option>Rechten</option><option>Economie</option><option>Geneeskunde</option>
+          <option>Ingenieurswetenschappen</option><option>Psychologie</option><option>Informatica</option><option>Andere</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Staat *</label>
+        <select class="form-control" id="staat-${idx}" required>
+          <option value="">Selecteer staat</option>
+          <option>Nieuw</option><option>Goed</option><option>Matig</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Vraagprijs (€) *</label>
+        <input type="number" class="form-control" id="prijs-${idx}" placeholder="bijv. 15" min="1" max="200" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Beschrijving</label>
+        <input type="text" class="form-control" id="desc-${idx}" placeholder="Notities, editie, enz.">
+      </div>
+    </div>
+  </div>`;
+}
+
+function voegBoekToe() {
+  boekIndex++;
+  const container = document.getElementById('boekenLijst');
+  const div = document.createElement('div');
+  div.innerHTML = boekTemplate(boekIndex);
+  container.appendChild(div.firstElementChild);
+  updateBoekTeller();
+}
+
+function verwijderBoek(idx) {
+  const el = document.getElementById('boek-' + idx);
+  if (el) { el.remove(); updateBoekTeller(); hernummerBoeken(); }
+}
+
+function hernummerBoeken() {
+  document.querySelectorAll('.boek-blok').forEach((blok, i) => {
+    const nr = blok.querySelector('.boek-nr');
+    if (nr) nr.textContent = i + 1;
+  });
+}
+
+function updateBoekTeller() {
+  const aantal = document.querySelectorAll('.boek-blok').length;
+  document.getElementById('boekTeller').textContent = '(' + aantal + ')';
+}
+
+function initBoekForm() {
+  boekIndex = 0;
+  document.getElementById('boekenLijst').innerHTML = '';
+  const div = document.createElement('div');
+  div.innerHTML = boekTemplate(0);
+  document.getElementById('boekenLijst').appendChild(div.firstElementChild);
+  updateBoekTeller();
+}
+
+// ─── ISBN OPHALEN ───
+async function fetchISBN(idx) {
+  const input = document.getElementById('isbn-' + idx);
+  const isbn = input.value.replace(/[^0-9X]/g,'');
+  if (!isbn) { showNotif('Voer eerst een ISBN in', 'error'); return; }
+
+  const btn = input.parentElement.querySelector('.isbn-fetch');
+  btn.textContent = 'Laden…'; btn.disabled = true;
+
+  try {
+    const res = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
+    const data = await res.json();
+    const key = `ISBN:${isbn}`;
+    if (data[key]) {
+      const b = data[key];
+      document.getElementById('titel-' + idx).value = b.title || '';
+      document.getElementById('auteur-' + idx).value = b.authors ? b.authors.map(a => a.name).join(', ') : '';
+      showNotif('Boekinfo opgehaald!', 'success');
+    } else {
+      showNotif('ISBN niet gevonden — vul handmatig in', 'error');
+    }
+  } catch(e) { showNotif('Ophalen mislukt — vul handmatig in', 'error'); }
+
+  btn.textContent = '↗ Ophalen'; btn.disabled = false;
+}
+
+// ─── FORMSPREE SUBMIT ───
+async function submitForm(e) {
+  e.preventDefault();
+
+  const naam = document.getElementById('verkNaam').value;
+  const email = document.getElementById('verkEmail').value;
+  const tel = document.getElementById('verkTel').value;
+
+  const boeken = [];
+  document.querySelectorAll('.boek-blok').forEach(blok => {
+    const id = blok.id.replace('boek-', '');
+    const titel = document.getElementById('titel-' + id).value;
+    if (!titel) return;
+    boeken.push({
+      titel,
+      auteur: document.getElementById('auteur-' + id).value,
+      richting: document.getElementById('richting-' + id).value,
+      staat: document.getElementById('staat-' + id).value,
+      prijs: document.getElementById('prijs-' + id).value,
+      desc: document.getElementById('desc-' + id).value
+    });
+  });
+
+  if (boeken.length === 0) { showNotif('Voeg minstens één boek toe', 'error'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Versturen…';
+
+  const boekenTekst = boeken.map((b, i) =>
+    `Boek ${i+1}: ${b.titel} | ${b.auteur} | ${b.richting} | ${b.staat} | €${b.prijs}${b.desc ? ' | ' + b.desc : ''}`
+  ).join('\n');
+
+  const isDemo = FORMSPREE_URL.includes('JOUW_FORM_ID');
+  if (isDemo) {
+    await new Promise(r => setTimeout(r, 1200));
+    showSuccess(); btn.disabled = false; btn.textContent = 'Aanmelding versturen →'; return;
+  }
+
+  try {
+    const res = await fetch(FORMSPREE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        naam, email, telefoon: tel,
+        aantal_boeken: boeken.length,
+        boeken: boekenTekst,
+        _subject: `BoekenHub — ${boeken.length} boek(en) aangeboden door ${naam}`
+      })
+    });
+    if (res.ok) { showSuccess(); }
+    else { showNotif('Er ging iets mis. Probeer opnieuw.', 'error'); }
+  } catch(e) { showNotif('Geen verbinding. Probeer opnieuw.', 'error'); }
+
+  btn.disabled = false; btn.textContent = 'Aanmelding versturen →';
+}
+
+function showSuccess() {
+  document.getElementById('formContainer').style.display = 'none';
+  document.getElementById('successScreen').classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+  document.getElementById('verkNaam').value = '';
+  document.getElementById('verkEmail').value = '';
+  document.getElementById('verkTel').value = '';
+  initBoekForm();
+  document.getElementById('formContainer').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('visible');
+}
+
+// ─── ADMIN ───
+function openAdmin() {
+  showPage('admin');
+  if (!adminLoggedIn) {
+    document.getElementById('adminLogin').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'none';
+  }
+}
+
+function checkAdmin() {
+  const pw = document.getElementById('adminPw').value;
+  if (pw === ADMIN_WACHTWOORD) {
+    adminLoggedIn = true;
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    renderAdminTable();
+    updateAdminStats();
+    loadBooksFromSheets();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function adminLogout() {
+  adminLoggedIn = false;
+  document.getElementById('adminPw').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('adminLogin').style.display = 'block';
+  document.getElementById('adminPanel').style.display = 'none';
+}
+
+function adminTab(el, filter) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  adminTabFilter = filter;
+  renderAdminTable();
+}
+
+function renderAdminTable() {
+  const tbody = document.getElementById('adminTableBody');
+  const list = adminTabFilter === 'alle' ? allBooks : allBooks.filter(b => b.status === adminTabFilter);
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:2rem;">Geen boeken in deze categorie</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map(b => `
+    <tr>
+      <td style="font-weight:500;max-width:220px;">${escapeHtml(b.titel)}</td>
+      <td style="color:var(--text2);">${escapeHtml(b.richting)}</td>
+      <td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent);">€${b.prijs}</td>
+      <td>${escapeHtml(b.staat)}</td>
+      <td><span class="status-badge status-${b.status}">${b.status === 'wacht' ? 'In afwachting' : b.status === 'online' ? 'Online' : 'Verkocht'}</span></td>
+    </tr>
+  `).join('');
+}
+
+function updateAdminStats() {
+  document.getElementById('adminStatOnline').textContent = allBooks.filter(b=>b.status==='online').length;
+  document.getElementById('adminStatWacht').textContent = allBooks.filter(b=>b.status==='wacht').length;
+  document.getElementById('adminStatVerkocht').textContent = allBooks.filter(b=>b.status==='verkocht').length;
+  document.getElementById('adminStatTotaal').textContent = allBooks.length;
+}
+
+// ─── SHEET ROW GENERATOR ───
+function generateSheetRow() {
+  const titel = document.getElementById('adminTitel').value;
+  const auteur = document.getElementById('adminAuteur').value;
+  const richting = document.getElementById('adminRichting').value;
+  const staat = document.getElementById('adminStaat').value;
+  const prijs = document.getElementById('adminPrijs').value;
+  const emoji = document.getElementById('adminEmoji').value || '📚';
+  const kleuren = { Rechten:'#1a2a1a', Economie:'#1a1a2a', Geneeskunde:'#2a1a1a', Ingenieurswetenschappen:'#1a2020', Psychologie:'#201a2a', Informatica:'#1a1820', Andere:'#1a1a1a' };
+  const kleur = kleuren[richting] || '#1a1a1a';
+
+  const row = [titel, auteur, richting, staat, prijs, emoji, kleur, 'online'].join('\t');
+  const out = document.getElementById('sheetRowOutput');
+  out.style.display = 'block';
+  out.innerHTML = `<div style="margin-bottom:6px;color:var(--text3);">Kopieer en plak in Google Sheets (Tab-gescheiden):</div>${escapeHtml(row)}`;
+  showNotif('Rij gegenereerd — kopieer naar Sheets!', 'success');
+}
+
+// ─── NOTIFICATIES ───
+let notifTimer;
+function showNotif(msg, type='success') {
+  const el = document.getElementById('notif');
+  el.textContent = (type === 'success' ? '✓ ' : '✗ ') + msg;
+  el.className = 'notif show ' + type;
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => { el.className = 'notif'; }, 3500);
+}
+
+// Sluit modal bij klik buiten
+document.getElementById('contactModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+
+</body>
+</html>
