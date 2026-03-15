@@ -1081,7 +1081,7 @@ function showPage(name) {
 // ─── MODAL ───
 function openModal(titel, auteur, prijs, staat, richting, jaar, afhaalbaar, fotoUrl) {
   document.getElementById('modalTitle').textContent = titel;
-  const afhaalTekst = afhaalbaar === 'true' || afhaalbaar === true ? '✓ Afhaalbaar' : '⏳ Nog niet afhaalbaar — het boek is onderweg naar onze locatie';
+  const afhaalTekst = afhaalbaar === 'true' || afhaalbaar === true ? '✓ Afhaalbaar: Kom het nu direct ophalen' : '⏳ Nog niet afhaalbaar — het boek is onderweg naar onze locatie';
   document.getElementById('modalDesc').textContent = `${auteur} · ${richting}${jaar?' · '+jaar:''} · ${staat} · €${prijs}`;
   document.getElementById('modalAfhaal').textContent = afhaalTekst;
   document.getElementById('modalAfhaal').style.color = (afhaalbaar === 'true' || afhaalbaar === true) ? 'var(--accent)' : '#ef9f27';
