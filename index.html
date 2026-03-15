@@ -211,6 +211,19 @@
   .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text3); }
   .empty-state p { font-size: 14px; margin-top: 0.5rem; }
 
+  /* ─── PAGINERING ─── */
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .page-btn {
+    background: transparent; border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 0.45rem 0.85rem;
+    color: var(--text2); font-family: 'DM Sans', sans-serif;
+    font-size: 14px; cursor: pointer; transition: all 0.2s; min-width: 38px;
+  }
+  .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active { background: var(--accent); color: #0e0e0f; border-color: var(--accent); font-weight: 500; }
+  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .page-info { font-size: 13px; color: var(--text3); padding: 0 0.5rem; }
+
   /* ─── HOE WERKT HET ─── */
   .how-section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; }
   .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
@@ -259,6 +272,13 @@
   }
   .isbn-fetch:hover { border-color: var(--accent); color: var(--accent); }
 
+  .upload-zone {
+    border: 1px dashed var(--border2); border-radius: var(--radius);
+    padding: 2rem; text-align: center; color: var(--text3);
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+  }
+  .upload-zone:hover { border-color: var(--accent); background: rgba(200,241,53,0.03); color: var(--text2); }
+  .upload-icon { font-size: 24px; margin-bottom: 0.5rem; }
 
   .form-submit {
     width: 100%; background: var(--accent); color: #0e0e0f;
@@ -358,6 +378,13 @@
   .contact-card .label { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
   .contact-card .line { font-size: 14px; margin-bottom: 4px; }
 
+  /* ─── SETUP BANNER ─── */
+  .setup-banner {
+    background: rgba(200,241,53,0.06); border: 0.5px solid rgba(200,241,53,0.2);
+    border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 2rem;
+    font-size: 13px; color: var(--text2); line-height: 1.6;
+  }
+  .setup-banner strong { color: var(--accent); }
 
   /* ─── FOOTER ─── */
   footer {
@@ -405,6 +432,11 @@
      CONFIGURATIE — HIER MOET JE AANPASSEN
      ═══════════════════════════════════════ -->
 <script>
+  // ┌─────────────────────────────────────────────────────────────┐
+  // │  STAP 1: Vervang dit door jouw Formspree endpoint           │
+  // │  Ga naar https://formspree.io → maak een form aan           │
+  // │  en plak de endpoint hier (bijv. https://formspree.io/f/xxx)│
+  // └─────────────────────────────────────────────────────────────┘
   const FORMSPREE_URL = "https://formspree.io/f/mvzwqngz";
 
   // ┌─────────────────────────────────────────────────────────────┐
@@ -425,6 +457,9 @@
   const CONTACT_EMAIL = "jorisvaho@gmail.com";
   const CONTACT_ADRES = "Parijsstraat 35 (0302), 3000 Leuven";
 
+  // ┌─────────────────────────────────────────────────────────────┐
+  // │  STAP 4: Adminwachtwoord (verander dit!)                    │
+  // └─────────────────────────────────────────────────────────────┘
   const ADMIN_WACHTWOORD = "Jovaho.123";
 </script>
 
@@ -500,8 +535,8 @@
       <span id="bookCount">laden…</span>
     </div>
 
-    <div class="books-grid" id="booksGrid">
-</div>
+    <div class="books-grid" id="booksGrid"></div>
+    <div class="pagination" id="pagination"></div>
   </div>
 
   <!-- HOE WERKT HET (inline op home) -->
@@ -701,11 +736,17 @@
   <div id="adminPanel" style="display:none;">
     <div class="admin-section">
 
+      <div class="setup-banner">
+        <strong>📋 Setupgids</strong> — Vervang in de config bovenaan het bestand:
+        <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:4px;">FORMSPREE_URL</code> met jouw Formspree endpoint,
+        <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:4px;">SHEETS_CSV_URL</code> met jouw Google Sheets CSV-link,
+        en de contactgegevens. Verwijder daarna deze banner.
+      </div>
 
       <div class="admin-header">
         <div class="admin-title">Beheerpaneel</div>
         <div style="display:flex;gap:0.6rem;align-items:center;">
-          <span style="font-size:13px;color:var(--text3)" id="adminSheetsStatus">Supabase database</span>
+          <span style="font-size:13px;color:var(--text3)" id="adminSheetsStatus">Google Sheets niet geconfigureerd</span>
           <button class="btn-outline" style="font-size:13px;padding:0.4rem 0.9rem;" onclick="loadBooksFromSheets()">↻ Verversen</button>
           <button class="action-btn danger" onclick="adminLogout()">Uitloggen</button>
         </div>
@@ -738,12 +779,16 @@
 
       <div style="margin-bottom:1.5rem;">
         <div class="section-title"><h2>Boeken beheren</h2></div>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:1.5rem;">
+          Nieuwe aanmeldingen komen binnen via e-mail (Formspree). Voeg ze handmatig toe aan je Google Sheet.
+          Boeken met status "online" verschijnen automatisch op de website.
+        </p>
 
         <!-- Handmatig boek toevoegen -->
         <details style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.5rem;">
           <summary style="cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;list-style:none;display:flex;align-items:center;justify-content:space-between;">
             + Boek handmatig toevoegen aan lijst
-<span style="font-size:12px;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400;">Direct toevoegen via Supabase</span>
+            <span style="font-size:12px;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400;">Voeg toe aan Google Sheet</span>
           </summary>
           <div style="margin-top:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
             <div>
@@ -771,6 +816,10 @@
               <label class="form-label">Verkoopprijs (€)</label>
               <input type="number" class="form-control" id="adminPrijs" placeholder="20">
             </div>
+            <div>
+              <label class="form-label">Emoji (cover)</label>
+              <input type="text" class="form-control" id="adminEmoji" placeholder="📚" maxlength="2">
+            </div>
           </div>
           <button class="btn-primary" style="margin-top:1rem;" onclick="generateSheetRow()">Genereer Sheet-rij →</button>
           <div id="sheetRowOutput" style="display:none;margin-top:1rem;background:var(--bg3);border-radius:var(--radius-sm);padding:1rem;font-family:monospace;font-size:12px;color:var(--text2);word-break:break-all;"></div>
@@ -783,10 +832,12 @@
           <thead>
             <tr>
               <th>Boek</th>
-              <th>Richting</th>
+              <th>Richting / Jaar</th>
               <th>Prijs</th>
               <th>Staat</th>
+              <th>Verkoper</th>
               <th>Status</th>
+              <th>Acties</th>
             </tr>
           </thead>
           <tbody id="adminTableBody">
@@ -795,6 +846,35 @@
         </table>
       </div>
 
+      <div style="margin-top:2rem;padding:1.25rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:0.75rem;">📊 Google Sheets structuur</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:0.75rem;">Jouw Google Sheet moet deze kolommen hebben (in deze volgorde):</p>
+        <div style="overflow-x:auto;">
+          <table style="font-size:12px;border-collapse:collapse;width:100%;min-width:500px;">
+            <tr style="background:var(--bg3);">
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">A: titel</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">B: auteur</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">C: richting</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">D: staat</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">E: prijs</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">F: emoji</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">G: kleur</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);font-family:monospace;color:var(--accent);">H: status</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Beginselen v. privaatrecht</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Dirix</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Rechten</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">Goed</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">22</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">⚖️</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">#1a2a1a</td>
+              <td style="padding:6px 10px;border:0.5px solid var(--border);color:var(--text2);font-size:11px;">online</td>
+            </tr>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:0.6rem;">Status moet "online", "wacht" of "verkocht" zijn. Alleen "online" boeken worden getoond op de website.</p>
+      </div>
 
     </div>
   </div>
@@ -861,8 +941,8 @@ async function loadBooksFromSheets() {
 
   if (isDemo) {
     allBooks = demoBooks;
-    renderBooks(allBooks.filter(b => b.status === 'online'));
-    updateStats(allBooks.filter(b => b.status === 'online'));
+    renderBooks(allBooks.filter(b => b.zichtbaar));
+    updateStats(allBooks.filter(b => b.zichtbaar));
     return;
   }
 
@@ -902,8 +982,8 @@ async function loadBooksFromSheets() {
   } catch (e) {
     console.error(e);
     allBooks = demoBooks;
-    renderBooks(allBooks.filter(b => b.status === 'online'));
-    updateStats(allBooks.filter(b => b.status === 'online'));
+    renderBooks(allBooks.filter(b => b.zichtbaar));
+    updateStats(allBooks.filter(b => b.zichtbaar));
     showNotif('Sheets niet bereikbaar — demodata getoond', 'error');
   }
 }
@@ -929,30 +1009,73 @@ function parseCSV(text) {
 }
 
 // ─── BOEKEN RENDEREN ───
-function renderBooks(list) {
-  const grid = document.getElementById('booksGrid');
-  document.getElementById('bookCount').textContent = list.length + ' resultaten';
+// ─── PAGINERING ───
+const BOEKEN_PER_PAGINA = 12;
+let huidigePagina = 1;
+let gefilterdeLijst = [];
 
-  if (list.length === 0) {
+function renderBooks(list) {
+  gefilterdeLijst = list;
+  huidigePagina = 1;
+  renderPagina();
+}
+
+function renderPagina() {
+  const grid = document.getElementById('booksGrid');
+  const totaal = gefilterdeLijst.length;
+  const aantalPaginas = Math.ceil(totaal / BOEKEN_PER_PAGINA);
+  const start = (huidigePagina - 1) * BOEKEN_PER_PAGINA;
+  const paginaBoeken = gefilterdeLijst.slice(start, start + BOEKEN_PER_PAGINA);
+
+  document.getElementById('bookCount').textContent = totaal + ' resultaten';
+
+  if (totaal === 0) {
     grid.innerHTML = '<div class="empty-state"><div style="font-size:2rem;">📭</div><p>Geen boeken gevonden voor deze zoekopdracht.</p></div>';
+    document.getElementById('pagination').innerHTML = '';
     return;
   }
 
-  grid.innerHTML = list.map(b => `
-    <div class="book-card" onclick="openModal('${escapeHtml(b.titel)}','${escapeHtml(b.auteur)}','${b.prijs}','${b.staat}')">
-      <div class="book-cover" style="background:${b.kleur}25;">
-        <div class="book-cover-inner" style="background:${b.kleur};">${b.emoji}</div>
-      </div>
+  const richtingKleuren = {'Rechten':'#1a2a1a','Economische wetenschappen':'#1a1a2a','Handelswetenschappen':'#1a1a2a','Handelsingenieur':'#1a1a2a','Toegepaste economische wetenschappen':'#1a1a2a','Geneeskunde':'#2a1a1a','Tandheelkunde':'#2a1a1a','Farmaceutische wetenschappen':'#2a1a1a','Biomedische wetenschappen':'#2a1a1a','Ingenieurswetenschappen':'#1a2020','Bio-ingenieurswetenschappen':'#1a2020','Informatica':'#1a1820','Wiskunde':'#1a1820','Fysica':'#1a1820','Chemie':'#1a1820','Biologie':'#1a2218','Psychologie':'#201a2a','Taal- en letterkunde':'#22181a'};
+  const richtingEmoji = {'Rechten':'⚖️','Economische wetenschappen':'📈','Handelswetenschappen':'💼','Handelsingenieur':'📊','Geneeskunde':'🫀','Tandheelkunde':'🦷','Farmaceutische wetenschappen':'💊','Biomedische wetenschappen':'🔬','Ingenieurswetenschappen':'⚙️','Bio-ingenieurswetenschappen':'🌱','Informatica':'💻','Wiskunde':'📐','Fysica':'⚛️','Chemie':'🧪','Biologie':'🧬','Psychologie':'🧠','Taal- en letterkunde':'📖','Geschiedenis':'🏛️','Architectuur':'🏗️'};
+
+  grid.innerHTML = paginaBoeken.map(b => {
+    const kleur = richtingKleuren[b.richting] || b.kleur || '#1a1a1a';
+    const emoji = richtingEmoji[b.richting] || b.emoji || '📚';
+    return `<div class="book-card" onclick="openModal('${escapeHtml(b.titel)}','${escapeHtml(b.auteur||'')}','${b.prijs}','${b.staat}','${escapeHtml(b.richting||'')}','${escapeHtml(b.jaar||'')}')">
+      <div class="book-cover" style="background:${kleur}25;"><div class="book-cover-inner" style="background:${kleur};">${emoji}</div></div>
       <div class="book-info">
         <div class="book-title">${escapeHtml(b.titel)}</div>
-        <div class="book-meta">${escapeHtml(b.auteur)} · ${escapeHtml(b.richting)}</div>
-        <div class="book-footer">
-          <div class="book-price">€${b.prijs}</div>
-          <div class="book-staat ${b.staat.toLowerCase()}">${b.staat}</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
+        <div class="book-meta">${escapeHtml(b.auteur||'')} · ${escapeHtml(b.richting||'')}${b.jaar ? ' · '+escapeHtml(b.jaar) : ''}</div>
+        <div class="book-footer"><div class="book-price">€${b.prijs}</div><div class="book-staat ${(b.staat||b.status||'').toLowerCase()}">${b.staat||b.status}</div></div>
+      </div></div>`;
+  }).join('');
+
+  // Paginering knoppen
+  if (aantalPaginas <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+
+  let knoppen = '';
+  knoppen += `<button class="page-btn" onclick="naarPagina(${huidigePagina-1})" ${huidigePagina===1?'disabled':''}>‹</button>`;
+
+  // Toon max 5 pagina-nummers rondom huidige pagina
+  let begin = Math.max(1, huidigePagina - 2);
+  let eind = Math.min(aantalPaginas, huidigePagina + 2);
+  if (begin > 1) knoppen += `<button class="page-btn" onclick="naarPagina(1)">1</button>${begin > 2 ? '<span class="page-info">…</span>' : ''}`;
+  for (let i = begin; i <= eind; i++) {
+    knoppen += `<button class="page-btn ${i===huidigePagina?'active':''}" onclick="naarPagina(${i})">${i}</button>`;
+  }
+  if (eind < aantalPaginas) knoppen += `${eind < aantalPaginas-1 ? '<span class="page-info">…</span>' : ''}<button class="page-btn" onclick="naarPagina(${aantalPaginas})">${aantalPaginas}</button>`;
+  knoppen += `<button class="page-btn" onclick="naarPagina(${huidigePagina+1})" ${huidigePagina===aantalPaginas?'disabled':''}>›</button>`;
+  knoppen += `<span class="page-info">Pagina ${huidigePagina} van ${aantalPaginas}</span>`;
+
+  document.getElementById('pagination').innerHTML = knoppen;
+}
+
+function naarPagina(nr) {
+  const aantalPaginas = Math.ceil(gefilterdeLijst.length / BOEKEN_PER_PAGINA);
+  if (nr < 1 || nr > aantalPaginas) return;
+  huidigePagina = nr;
+  renderPagina();
+  document.getElementById('search-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 function updateStats(online) {
@@ -970,12 +1093,15 @@ function escapeHtml(s) {
 function filterBooks() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const richting = document.getElementById('richtingFilter').value;
+  const jaarEl = document.getElementById('jaarFilter');
+  const jaar = jaarEl ? jaarEl.value : '';
   const list = allBooks.filter(b => {
     if (b.status !== 'online') return false;
     const matchQ = !q || b.titel.toLowerCase().includes(q) || b.auteur.toLowerCase().includes(q);
     const matchR = !richting || b.richting === richting;
-    const matchF = activeFilter === 'alle' || b.staat === activeFilter;
-    return matchQ && matchR && matchF;
+    const matchJ = !jaar || b.jaar === jaar;
+    const matchF = activeFilter === 'alle' || b.staat === activeFilter || b.status === activeFilter;
+    return matchQ && matchR && matchJ && matchF;
   });
   renderBooks(list);
 }
@@ -1124,47 +1250,70 @@ function adminTab(el, filter) {
 
 function renderAdminTable() {
   const tbody = document.getElementById('adminTableBody');
-  const list = adminTabFilter === 'alle' ? allBooks : allBooks.filter(b => b.status === adminTabFilter);
+  const list = adminTabFilter === 'alle' ? allBooks
+    : adminTabFilter === 'zichtbaar' ? allBooks.filter(b => b.zichtbaar)
+    : allBooks.filter(b => !b.zichtbaar);
 
   if (list.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:2rem;">Geen boeken in deze categorie</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2rem;">Geen boeken in deze categorie</td></tr>';
     return;
   }
 
-  tbody.innerHTML = list.map(b => `
-    <tr>
-      <td style="font-weight:500;max-width:220px;">${escapeHtml(b.titel)}</td>
-      <td style="color:var(--text2);">${escapeHtml(b.richting)}</td>
-      <td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent);">€${b.prijs}</td>
-      <td>${escapeHtml(b.staat)}</td>
-      <td><span class="status-badge status-${b.status}">${b.status === 'wacht' ? 'In afwachting' : b.status === 'online' ? 'Online' : 'Verkocht'}</span></td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = list.map(b => `<tr>
+    <td style="font-weight:500;max-width:200px;">${escapeHtml(b.titel)}</td>
+    <td style="font-size:13px;color:var(--text2);">${escapeHtml(b.richting||'')}${b.jaar ? '<br><span style="font-size:11px;color:var(--text3)">'+escapeHtml(b.jaar)+'</span>' : ''}</td>
+    <td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent);">€${b.prijs}</td>
+    <td>${escapeHtml(b.staat||'')}</td>
+    <td style="font-size:12px;color:var(--text2);">${escapeHtml(b.naam||'')}${b.email ? '<br><span style="color:var(--text3)">'+escapeHtml(b.email)+'</span>' : ''}</td>
+    <td><span class="status-badge ${b.zichtbaar ? 'status-online' : 'status-verkocht'}">${b.zichtbaar ? 'Zichtbaar' : 'Verborgen'}</span></td>
+    <td style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="action-btn ${b.zichtbaar ? '' : 'approve'}" onclick="toggleZichtbaar('${b.id}',${b.zichtbaar})">${b.zichtbaar ? '🙈 Verbergen' : '👁 Tonen'}</button>
+      <button class="action-btn danger" onclick="verwijderBoekAdmin('${b.id}')">🗑 Verwijder</button>
+    </td>
+  </tr>`).join('');
 }
 
 function updateAdminStats() {
-  document.getElementById('adminStatOnline').textContent = allBooks.filter(b=>b.status==='online').length;
-  document.getElementById('adminStatWacht').textContent = allBooks.filter(b=>b.status==='wacht').length;
-  document.getElementById('adminStatVerkocht').textContent = allBooks.filter(b=>b.status==='verkocht').length;
+  document.getElementById('adminStatOnline').textContent = allBooks.filter(b => b.zichtbaar).length;
+  document.getElementById('adminStatWacht').textContent = allBooks.filter(b => !b.zichtbaar).length;
+  document.getElementById('adminStatVerkocht').textContent = allBooks.length;
   document.getElementById('adminStatTotaal').textContent = allBooks.length;
 }
 
-// ─── SHEET ROW GENERATOR ───
+async function toggleZichtbaar(id, huidig) {
+  if (!isSupaConfigured) { showNotif('Supabase niet geconfigureerd', 'error'); return; }
+  const { error } = await supa.from('boeken').update({ zichtbaar: !huidig }).eq('id', id);
+  if (error) { showNotif('Fout: ' + error.message, 'error'); return; }
+  await laadBoeken();
+  showNotif(huidig ? 'Boek verborgen' : 'Boek zichtbaar gezet', 'success');
+}
+
+async function verwijderBoekAdmin(id) {
+  if (!confirm('Weet je zeker dat je dit boek permanent wil verwijderen?')) return;
+  if (!isSupaConfigured) { showNotif('Supabase niet geconfigureerd', 'error'); return; }
+  const { error } = await supa.from('boeken').delete().eq('id', id);
+  if (error) { showNotif('Fout: ' + error.message, 'error'); return; }
+  await laadBoeken();
+  showNotif('Boek verwijderd', 'success');
+}
+
 function generateSheetRow() {
   const titel = document.getElementById('adminTitel').value;
-  const auteur = document.getElementById('adminAuteur').value;
-  const richting = document.getElementById('adminRichting').value;
-  const staat = document.getElementById('adminStaat').value;
   const prijs = document.getElementById('adminPrijs').value;
-  const emoji = document.getElementById('adminEmoji').value || '📚';
-  const kleuren = { Rechten:'#1a2a1a', Economie:'#1a1a2a', Geneeskunde:'#2a1a1a', Ingenieurswetenschappen:'#1a2020', Psychologie:'#201a2a', Informatica:'#1a1820', Andere:'#1a1a1a' };
-  const kleur = kleuren[richting] || '#1a1a1a';
-
-  const row = [titel, auteur, richting, staat, prijs, emoji, kleur, 'online'].join('\t');
-  const out = document.getElementById('sheetRowOutput');
-  out.style.display = 'block';
-  out.innerHTML = `<div style="margin-bottom:6px;color:var(--text3);">Kopieer en plak in Google Sheets (Tab-gescheiden):</div>${escapeHtml(row)}`;
-  showNotif('Rij gegenereerd — kopieer naar Sheets!', 'success');
+  if (!titel || !prijs) { showNotif('Vul minstens titel en prijs in', 'error'); return; }
+  if (!isSupaConfigured) { showNotif('Supabase niet geconfigureerd', 'error'); return; }
+  supa.from('boeken').insert([{
+    titel,
+    auteur: document.getElementById('adminAuteur').value || null,
+    richting: document.getElementById('adminRichting').value || null,
+    staat: document.getElementById('adminStaat').value || null,
+    prijs: parseFloat(prijs) || 0,
+    zichtbaar: true
+  }]).then(({ error }) => {
+    if (error) { showNotif('Fout: ' + error.message, 'error'); return; }
+    laadBoeken();
+    showNotif('Boek toegevoegd!', 'success');
+  });
 }
 
 // ─── NOTIFICATIES ───
