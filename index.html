@@ -361,7 +361,7 @@
   .modal-overlay.open { display: flex; }
   .modal {
     background: var(--bg2); border: 0.5px solid var(--border2);
-    border-radius: var(--radius); padding: 2rem; max-width: 420px; width: 100%;
+    border-radius: var(--radius); padding: 2rem; max-width: 480px; width: 100%;
   }
   .modal h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.4rem; }
   .modal p { font-size: 14px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.5; font-weight: 300; }
@@ -836,16 +836,43 @@
 <!-- ═══════════ CONTACT MODAL ═══════════ -->
 <div class="modal-overlay" id="contactModal">
   <div class="modal">
-    <h3 id="modalTitle">Interesse in dit boek?</h3>
-    <img id="modalFoto" style="display:none;width:100%;max-height:200px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:1rem;" alt="boekfoto">
-    <p id="modalDesc"></p>
-    <p id="modalAfhaal" style="font-size:13px;font-weight:500;margin-top:-0.75rem;margin-bottom:1rem;"></p>
-    <div class="contact-card">
-      <div class="label">Onze contactgegevens</div>
-      <div class="line" id="modalEmail"></div>
-      <div class="line" id="modalTel"></div>
-      <div class="line" id="modalAdres" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
+    <h3 id="modalTitle" style="margin-bottom:0.3rem;">Interesse in dit boek?</h3>
+    <p id="modalDesc" style="font-size:13px;color:var(--text2);margin-bottom:0.5rem;"></p>
+    <p id="modalAfhaal" style="font-size:12px;font-weight:500;margin-bottom:1rem;"></p>
+    <img id="modalFoto" style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:1rem;" alt="boekfoto">
+
+    <!-- Google Maps — prominent -->
+    <div style="border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1rem;">
+      <iframe id="modalMapsFrame" width="100%" height="180" style="border:0;display:block;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="about:blank"></iframe>
     </div>
+
+    <!-- Adres label onder kaart -->
+    <div style="font-size:12px;color:var(--text3);margin-bottom:1rem;display:flex;align-items:center;gap:5px;">
+      <span>📍</span><span id="modalAdres"></span>
+    </div>
+
+    <!-- Telefoon + email klein -->
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <a id="modalTelLink" href="#" style="text-decoration:none;flex:1;min-width:120px;">
+        <div style="background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:0.6rem 0.85rem;display:flex;align-items:center;gap:0.5rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <span style="font-size:15px;">📱</span>
+          <div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Bellen</div>
+            <div id="modalTel" style="font-size:12px;font-weight:500;color:var(--accent);"></div>
+          </div>
+        </div>
+      </a>
+      <a id="modalMailLink" href="#" style="text-decoration:none;flex:1;min-width:120px;">
+        <div style="background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:0.6rem 0.85rem;display:flex;align-items:center;gap:0.5rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <span style="font-size:15px;">✉️</span>
+          <div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Mailen</div>
+            <div id="modalEmail" style="font-size:12px;font-weight:500;color:var(--accent);word-break:break-all;"></div>
+          </div>
+        </div>
+      </a>
+    </div>
+
     <div class="modal-actions">
       <button class="btn-outline" onclick="closeModal()">Sluiten</button>
       <button class="btn-primary" onclick="closeModal()">Begrepen!</button>
@@ -891,9 +918,14 @@ const richtingEmoji = {'Rechten':'⚖️','Criminologische wetenschappen':'🔍'
 
 // ─── INIT ───
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('modalEmail').textContent = "✉️ " + CONTACT_EMAIL;
-  document.getElementById('modalTel').textContent = "📱 " + CONTACT_TELEFOON;
-  document.getElementById('modalAdres').textContent = "📍 " + CONTACT_ADRES;
+  document.getElementById('modalEmail').textContent = CONTACT_EMAIL;
+  document.getElementById('modalTelLink').href = 'tel:' + CONTACT_TELEFOON.replace(/\s/g,'');
+  document.getElementById('modalMailLink').href = 'mailto:' + CONTACT_EMAIL;
+  document.getElementById('modalTel').textContent = CONTACT_TELEFOON;
+  document.getElementById('modalAdres').textContent = CONTACT_ADRES;
+  const modalMapsQuery = encodeURIComponent(CONTACT_ADRES);
+  document.getElementById('modalMapsFrame').src =
+    `https://www.google.com/maps?q=${modalMapsQuery}&output=embed`;
   document.getElementById('succesEmail').textContent = "✉️ " + CONTACT_EMAIL;
   document.getElementById('succesTel').textContent = "📱 " + CONTACT_TELEFOON;
   document.getElementById('adresText').textContent = "Ophalen kan op " + CONTACT_ADRES + ". Neem vooraf contact op.";
