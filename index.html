@@ -1082,12 +1082,12 @@ async function submitForm(e) {
   const boeken=[];
   const boekBlokken = [];
   document.querySelectorAll('.boek-blok').forEach(blok => {
-    const id=blok.id.replace('boek-','');
-    const titel=document.getElementById('titel-'+id).value;
+    const domId=blok.id.replace('boek-','');
+    const titel=document.getElementById('titel-'+domId).value;
     if (!titel) return;
-    const fotoInput = document.getElementById('foto-input-'+id);
+    const fotoInput = document.getElementById('foto-input-'+domId);
     const fotoFile = fotoInput && fotoInput.files[0] ? fotoInput.files[0] : null;
-    boekBlokken.push({ id, titel, auteur:document.getElementById('auteur-'+id).value||null, richting:document.getElementById('richting-'+id).value||null, jaar:document.getElementById('jaar-'+id).value||null, staat:document.getElementById('staat-'+id).value||null, prijs:parseFloat(document.getElementById('prijs-'+id).value)||0, beschrijving:document.getElementById('desc-'+id).value||null, naam, email, telefoon:tel||null, zichtbaar:true, afhaalbaar:false, fotoFile });
+    boekBlokken.push({ domId, titel, auteur:document.getElementById('auteur-'+domId).value||null, richting:document.getElementById('richting-'+domId).value||null, jaar:document.getElementById('jaar-'+domId).value||null, staat:document.getElementById('staat-'+domId).value||null, prijs:parseFloat(document.getElementById('prijs-'+domId).value)||0, beschrijving:document.getElementById('desc-'+domId).value||null, naam, email, telefoon:tel||null, zichtbaar:true, afhaalbaar:false, fotoFile });
   });
   if (boekBlokken.length===0) { showNotif('Voeg minstens één boek toe','error'); return; }
   const btn=document.getElementById('submitBtn');
@@ -1095,7 +1095,7 @@ async function submitForm(e) {
   if (!isSupaConfigured) { await new Promise(r=>setTimeout(r,1000)); showSuccess(); btn.disabled=false; btn.textContent='Boek(en) plaatsen →'; return; }
   try {
     // Eerst boeken inserten zonder foto_url
-    const insertData = boekBlokken.map(({fotoFile, ...b}) => b);
+    const insertData = boekBlokken.map(({fotoFile, domId, ...b}) => b);
     const {data: inserted, error}=await supa.from('boeken').insert(insertData).select();
     if (error) throw error;
     // Dan foto's uploaden en url opslaan
